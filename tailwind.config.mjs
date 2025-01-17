@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+import typography from '@tailwindcss/typography';
 export default {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -8,10 +9,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+
       },
+      fontFamily: {
+        heroMain: ['var(--font-spoqa-bold)', 'sans-serif'],
+        heroSub: ['var(--font-spoqa-regular)', 'sans-serif'],
+        mainFont: ['var(--font-main)', 'sans-serif']
+      }
     },
   },
-  plugins: [],
+  plugins: [typography],
 };
