@@ -7,7 +7,8 @@ const mainFont = Noto_Sans_KR({
   weight: ['400', '500', '600'],
   style: 'normal',
   display: 'swap',
-  variable: '--font-main'
+  variable: '--font-main',
+  subsets: ['latin']
 })
 
 const heroMain = localFont(
