@@ -20,7 +20,7 @@ export default function HeroSection(props) {
             강의 살펴보기
           </a>
           <Link
-            href="/public"
+            href="/"
             className="bg-[#F0F0FF] py-2 px-4 rounded-lg inline-block text-center"
           >
             문제 풀러가기
