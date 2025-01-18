@@ -14,7 +14,7 @@ export default function Header() {
           <Link href="/">커뮤니티</Link>
         </nav>
       </div>
-      <Link href="/">로그인</Link>
+      <Link href="/account/login">로그인</Link>
     </header>
   )
 }
