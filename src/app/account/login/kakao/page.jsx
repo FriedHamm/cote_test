@@ -4,6 +4,7 @@ import axios from "axios";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Loading from "@/components/Loading";
+export const dynamic = "force-dynamic";
 
 export default function KakaoCallbackPage() {
   const searchParams = useSearchParams();
