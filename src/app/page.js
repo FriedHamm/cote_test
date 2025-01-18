@@ -4,7 +4,7 @@ import HeroSection from "@/components/main page/HeroSection";
 import CourseSection from "@/components/main page/CourseSection";
 
 export default function Home({searchParams}) {
-  const code = searchParams.get("code");
+  const code = searchParams?.code;
 
   if (code) {
     // code 파라미터가 있을 경우, 지정된 URL로 요청 보내기
@@ -28,7 +28,7 @@ export default function Home({searchParams}) {
   } else {
     console.log('code 파라미터가 URL에 없습니다.');
   }
-  
+
   return (
     <>
       <HeroSection/>
