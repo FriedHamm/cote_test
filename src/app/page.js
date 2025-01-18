@@ -12,14 +12,8 @@ export default function Home({searchParams}) {
       method: 'GET', // 필요에 따라 POST 등으로 변경
       // 추가 옵션 설정 가능 (헤더, body 등)
     })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('네트워크 응답에 문제가 있습니다.');
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('응답 데이터:', data);
+      .then(() => {
+        console.log('요청완료');
         // 응답 데이터 처리 로직 추가
       })
       .catch(error => {
