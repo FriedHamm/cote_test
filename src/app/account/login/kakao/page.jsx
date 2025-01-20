@@ -15,6 +15,7 @@ function KakaoCallbackHandler() {
 
     if (!code) return; // code가 없으면 콜백 처리할 수 없으므로 아무것도 하지 않음
 
+    axios.defaults.withCredentials = true;
     axios
       .get(
         `https://nossidev.run.goorm.site/account/social-login/callback/?code=${code}&state=${state}`,
