@@ -18,7 +18,7 @@ function KakaoCallbackHandler() {
     axios.defaults.withCredentials = true;
     axios
       .get(
-        `/api/account/social-login/callback/?code=${code}&state=${state}`,
+        `https://nossidev.run.goorm.site/account/social-login/callback/?code=${code}&state=${state}`,
         {
           withCredentials: true, // 쿠키 주고받기 설정
         }
