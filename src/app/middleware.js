@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-export function m(request) {
+export function middleware(request) {
   // 나중에 필요하면 적용할 것
   // 보통 외부 script나 이미지에 nonce를 적용해서 보안을 강화하기 위함
   // const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
