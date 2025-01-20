@@ -30,7 +30,13 @@ export default function HeroSection(props) {
           >
             문제 풀러가기
           </Link>
-          <button onclick={handleClick}>테스트 버튼</button>
+          <button
+            href="/"
+            className="bg-[#F0F0FF] py-2 px-4 rounded-lg inline-block text-center"
+            onclick={handleClick}
+          >
+            문제 풀러가기
+          </button>
         </div>
       </div>
       <Image src="/heroSectionGif.gif" width={540} height={304} alt="visualization of dfs"/>
