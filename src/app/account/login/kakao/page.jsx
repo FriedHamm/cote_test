@@ -10,7 +10,7 @@ function KakaoCallbackHandler() {
   const router = useRouter();
 
   useEffect(() => {
-    const code = searchParams.get('code');
+    const code = encodeURIComponent(searchParams.get('code'));
     const state = searchParams.get('state');
 
     if (!code) return; // code가 없으면 콜백 처리할 수 없으므로 아무것도 하지 않음
