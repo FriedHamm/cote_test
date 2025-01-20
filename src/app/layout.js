@@ -46,12 +46,13 @@ export const metadata = {
 
 export default function RootLayout({children}) {
   return (
-    <html lang="en">
+    <html lang="en" className="">
       <body className={`
           ${mainFont.variable} 
           ${heroMain.variable} 
           ${heroSub.variable}
-          font-mainFont font-normal
+          font-mainFont
+          font-normal
         `}>
         <Header/>
         {children}

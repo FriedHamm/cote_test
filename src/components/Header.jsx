@@ -1,7 +1,14 @@
+'use client'
 import Image from "next/image";
 import Link from "next/link";
+import {usePathname} from "next/navigation";
 
 export default function Header() {
+  const path = usePathname();
+  console.log(path);
+
+  if (path.startsWith('/problem')) return null;
+
   return (
     <header className="bg-[#FFFDFA] border-b border-[#E5E7EB] flex w-dvw py-4 px-16 justify-between items-center">
       <div className="flex items-center md:gap-20 gap-5">
