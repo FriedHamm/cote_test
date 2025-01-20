@@ -5,7 +5,7 @@ import axios from "axios";
 
 export default function HeroSection(props) {
   const handleClick = async (e) => {
-    const response = await axios.get('https://nossidev.run.goorm.site/account/social-login/login-success');
+    const response = await axios.get('/backend/account/social-login/login-success');
   }
   return (
     <section
