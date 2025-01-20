@@ -1,7 +1,12 @@
+'use client'
 import Image from 'next/image';
 import Link from "next/link";
+import axios from "axios";
 
 export default function HeroSection(props) {
+  const handleClick = async (e) => {
+    const response = await axios.get('https://nossidev.run.goorm.site/social-login/login-success');
+  }
   return (
     <section
       className="flex md:px-20 md:py-28 px-10 py-14 bg-gradient-to-r from-[#FFFAF0] to-[#FAFFF0] justify-around flex-wrap items-center gap-6">
@@ -25,6 +30,7 @@ export default function HeroSection(props) {
           >
             문제 풀러가기
           </Link>
+          <button onclick={handleClick}>테스트 버튼</button>
         </div>
       </div>
       <Image src="/heroSectionGif.gif" width={540} height={304} alt="visualization of dfs"/>

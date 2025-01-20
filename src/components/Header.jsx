@@ -2,13 +2,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
-import {cookies} from "next/headers";
 
 export default function Header() {
   const path = usePathname();
-  const cookie = cookies();
-  const token = cookie.get('access_token');
-  console.log(token);
 
   if (path.startsWith('/problem')) return null;
 
