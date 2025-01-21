@@ -2,6 +2,7 @@ import "./globals.css";
 import {Noto_Sans_KR} from "next/font/google";
 import localFont from 'next/font/local'
 import Header from "@/components/Header";
+import {cookies} from "next/headers";
 
 const mainFont = Noto_Sans_KR({
   weight: ['400', '500', '600'],
@@ -45,6 +46,8 @@ export const metadata = {
 };
 
 export default function RootLayout({children}) {
+  const cookie = cookies();
+  console.log(cookie);
   return (
     <html lang="en" className="">
       <body className={`
