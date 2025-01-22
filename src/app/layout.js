@@ -3,6 +3,7 @@ import {Noto_Sans_KR} from "next/font/google";
 import localFont from 'next/font/local'
 import Header from "@/components/Header";
 import {cookies} from "next/headers";
+import axios from "axios";
 
 const mainFont = Noto_Sans_KR({
   weight: ['400', '500', '600'],
@@ -46,10 +47,10 @@ export const metadata = {
 };
 
 export default function RootLayout({children}) {
-  const cookie = cookies();
-  console.log(cookie);
+  axios.get('https://nossidev.run.goorm.site/account/social-login/login-success');
+
   return (
-    <html lang="en" className="">
+    <html lang="ko" className="">
       <link rel="icon" href="/logo.webp" sizes="any"/>
       <body className={`
           ${mainFont.variable} 
