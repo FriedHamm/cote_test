@@ -10,3 +10,6 @@
 .prose :where(code):not(:where([class~="not-prose"], [class~="not-prose"] *))::after {
   content: none !important;
 }
+.ͼ4 .cm-line ::selection, .ͼ4 .cm-line::selection {
+  background-color: #D9D9EA !important;
+}

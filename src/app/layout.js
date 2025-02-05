@@ -1,9 +1,8 @@
 import "./globals.css";
 import {Noto_Sans_KR} from "next/font/google";
 import localFont from 'next/font/local'
-import Header from "@/components/Header";
-import {cookies} from "next/headers";
-import axios from "axios";
+import ProviderWrapper from "@/app/ProviderWrapper";
+import ConditionalHeader from "@/components/ConditionalHeader";
 
 const mainFont = Noto_Sans_KR({
   weight: ['400', '500', '600'],
@@ -47,7 +46,6 @@ export const metadata = {
 };
 
 export default function RootLayout({children}) {
-  axios.get('https://nossidev.run.goorm.site/account/social-login/login-success');
 
   return (
     <html lang="ko" className="">
@@ -59,8 +57,10 @@ export default function RootLayout({children}) {
           font-mainFont
           font-normal
         `}>
-        <Header/>
-        {children}
+        <ProviderWrapper>
+          <ConditionalHeader/>
+          {children}
+        </ProviderWrapper>
       </body>
     </html>
   );

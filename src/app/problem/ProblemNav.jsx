@@ -1,6 +1,6 @@
 'use client'
 import { useState } from "react";
-import {useParams, useRouter} from "next/navigation";
+import {useParams, usePathname, useRouter} from "next/navigation";
 import {
   MdHistory,
   MdLightbulbOutline,
@@ -9,14 +9,15 @@ import {
 } from "react-icons/md";
 
 export default function ProblemNav() {
-  const [curTab, setCurTab] = useState('description');
+  const path = usePathname();
+  const [curTab, setCurTab] = useState(path.split('/')[3]);
   const router = useRouter();
   const {problemId} = useParams();
 
-  const handleNavigation = (tab, path) => {
-    if(curTab === tab) return;
+  const handleNavigation = (tab) => {
+    if (curTab === tab) return;
     setCurTab(tab);
-    router.push(`/problem/${problemId}/${path}`);
+    router.push(`/problem/${problemId}/${tab}`);
   };
 
   return (
@@ -24,7 +25,7 @@ export default function ProblemNav() {
       <button
         className={`font-semibold inline-flex gap-1 items-center 
                     ${curTab === 'description' ? 'text-black' : 'text-gray-500'}`}
-        onClick={() => handleNavigation('description', 'description')}
+        onClick={() => handleNavigation('description')}
       >
         <MdOutlineDescription className="w-6 h-6" />
         문제 설명
@@ -32,8 +33,8 @@ export default function ProblemNav() {
 
       <button
         className={`font-semibold inline-flex gap-1 items-center 
-                    ${curTab === 'explanation' ? 'text-black' : 'text-gray-500'}`}
-        onClick={() => handleNavigation('explanation', 'solution-explanation')}
+                    ${curTab === 'solution-explanation' ? 'text-black' : 'text-gray-500'}`}
+        onClick={() => handleNavigation('solution-explanation')}
       >
         <MdLightbulbOutline className="w-6 h-6" />
         문제 해설
@@ -41,8 +42,8 @@ export default function ProblemNav() {
 
       <button
         className={`font-semibold inline-flex gap-1 items-center 
-                    ${curTab === 'community' ? 'text-black' : 'text-gray-500'}`}
-        onClick={() => handleNavigation('community', 'community-solution')}
+                    ${curTab === 'community-solution' ? 'text-black' : 'text-gray-500'}`}
+        onClick={() => handleNavigation('community-solution')}
       >
         <MdPeopleOutline className="w-6 h-6" />
         커뮤니티 문제풀이
@@ -50,8 +51,8 @@ export default function ProblemNav() {
 
       <button
         className={`font-semibold inline-flex gap-1 items-center 
-                    ${curTab === 'history' ? 'text-black' : 'text-gray-500'}`}
-        onClick={() => handleNavigation('history', 'submission')}
+                    ${curTab === 'submission' ? 'text-black' : 'text-gray-500'}`}
+        onClick={() => handleNavigation('submission')}
       >
         <MdHistory className="w-6 h-6" />
         제출 내역
