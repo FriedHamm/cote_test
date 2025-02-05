@@ -1,4 +1,4 @@
-// pages/page.js
+'use client'
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import HeroSection from '@/components/main page/HeroSection';
