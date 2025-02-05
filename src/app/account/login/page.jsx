@@ -5,6 +5,7 @@ import Image from "next/image";
 export default function LoginPage() {
   // 폼에 접근하기 위한 ref 생성
   const formRef = useRef(null);
+  console.log(process.env.NEXT_PUBLIC_BACKEND_URL);
 
   // 버튼 클릭 시 폼 제출
   const handleButtonClick = () => {
