@@ -11,13 +11,6 @@ export default function Home() {
 
   useEffect(() => {
     dispatch(checkAuth());
-    api.post('account/v1/auth/social/token/refreshment')
-      .then(() => {
-        console.log('토큰 리프레시 요청이 성공했습니다.');
-      })
-      .catch(err => {
-        console.log('토큰 리프레시 요청에 실패했습니다.', err);
-      });
   }, [dispatch]);
 
   return (
