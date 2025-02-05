@@ -5,7 +5,7 @@ import axios from 'axios';
 export const checkAuth = createAsyncThunk(
   'auth/checkAuth',
   async () => {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/account/v1/user`);
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/account/v1/user`, {withCredentials: true});
     return response.data.msg;
   }
 );
