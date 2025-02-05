@@ -9,7 +9,6 @@ export default function Home() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // 페이지가 마운트되면 로그인 상태 API 호출
     dispatch(checkAuth());
   }, [dispatch]);
 

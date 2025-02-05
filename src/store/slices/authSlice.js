@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import api from "@/axiosConfig";
 
 // 백엔드 API를 호출해 로그인 상태를 확인하는 thunk
 export const checkAuth = createAsyncThunk(
   'auth/checkAuth',
   async () => {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/account/v1/user`, {withCredentials: true});
+    const response = await api.get('/account/v1/user');
     return response.data.msg;
   }
 );
