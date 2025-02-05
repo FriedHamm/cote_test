@@ -1,5 +1,5 @@
 'use client';
-import React, {useRef} from "react";
+import React, { useRef } from "react";
 import Image from "next/image";
 
 export default function LoginPage() {
@@ -23,7 +23,7 @@ export default function LoginPage() {
           height={45}
         />
       </button>
-      <LoginForm ref={formRef}/>
+      <LoginForm ref={formRef} />
     </div>
   );
 }
@@ -31,9 +31,14 @@ export default function LoginPage() {
 // forwardRef를 사용하여 ref 전달 허용
 const LoginForm = React.forwardRef((props, ref) => {
   return (
-    <form action="/auth/social/token" method="POST" className="hidden" ref={ref}>
-      <input type="hidden" name="provider" value="kakao"/>
-      <input type="hidden" name="next" value=""/>
+    <form
+      action={`${process.env.NEXT_PUBLIC_BACKEND_URL}/account/v1/auth/social/token`}
+      method="POST"
+      className="hidden"
+      ref={ref}
+    >
+      <input type="hidden" name="provider" value="kakao" />
+      <input type="hidden" name="next" value="" />
     </form>
   );
 });
