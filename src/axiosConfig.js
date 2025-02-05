@@ -1,6 +1,5 @@
 import axios from 'axios';
-// Redux 스토어 임포트 (스토어 파일의 경로에 맞게 수정하세요)
-import store from './store';
+import {store} from "@/store/store";
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
