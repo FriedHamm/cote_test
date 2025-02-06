@@ -14,9 +14,10 @@ export default function Home() {
       <button onClick={() => {
         if (!isLoggedIn) {
           alert('로그인 상태가 아닙니다! 먼저 로그인을 해주세요.');
+        } else {
+          api.get('/account/v1/user')
+            .then(res => console.log(res));
         }
-        api.get('/account/v1/user')
-          .then(res => console.log(res));
       }}>누르면 요청됨</button>
       <HeroSection />
       <CourseSection />
