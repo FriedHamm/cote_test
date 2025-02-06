@@ -1,6 +1,5 @@
-// authHelpers.js
-import { store } from './store';
 import {logout} from "@/store/slices/authSlice";
+import {store} from "@/store/store";
 
 export function handleLogout() {
   store.dispatch(logout());

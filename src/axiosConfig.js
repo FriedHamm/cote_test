@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {handleLogout} from "@/authHelper";
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
@@ -25,9 +26,8 @@ api.interceptors.response.use(
         } catch (err) {
           console.log('토큰 리프레시 요청에 실패했습니다.', err);
         }
-      } else if (errorMessage === 'refresh token required.') {
-        // TODO: refresh token required 상황에 대한 조건 추가 (추후 로직 구현)
-        console.log('리프레시 토큰이 필요합니다.');
+      } else if (errorMessage === 'refresh_token required.') {
+        handleLogout();
       }
     }
     return Promise.reject(error);
