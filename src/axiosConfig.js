@@ -15,11 +15,12 @@ api.interceptors.response.use(
     // 에러 응답이 있고, status가 401이면
     if (error?.response?.status === 401) {
       const errorMessage = error?.response?.data?.detail || '';
+      console.error(errorMessage);
 
       if (errorMessage === 'access token required.') {
         // 기존 요청: access token required 상황일 때 토큰 리프레시 요청
         try {
-          await api.post('account/v1/auth/social/token/refreshment');
+          await api.post('account/v1/auth/token/refreshment');
           console.log('토큰 리프레시 요청이 성공했습니다.');
         } catch (err) {
           console.log('토큰 리프레시 요청에 실패했습니다.', err);
