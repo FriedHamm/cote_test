@@ -39,24 +39,27 @@ export default function CodeEditor({
 
   // language 혹은 템플릿 코드 props가 변경될 때마다 templateCode 업데이트
   useEffect(() => {
-    switch (language) {
-      case "C":
-        setTemplateCode(C);
-        break;
-      case "C++":
-        setTemplateCode(Cpp);
-        break;
-      case "Python":
-        setTemplateCode(Python);
-        break;
-      case "Java":
-        setTemplateCode(Java);
-        break;
-      case "Javascript":
-      default:
-        setTemplateCode(Javascript);
-        break;
+    if (setTemplateCode) {
+      switch (language) {
+        case "C":
+          setTemplateCode(C);
+          break;
+        case "C++":
+          setTemplateCode(Cpp);
+          break;
+        case "Python":
+          setTemplateCode(Python);
+          break;
+        case "Java":
+          setTemplateCode(Java);
+          break;
+        case "Javascript":
+        default:
+          setTemplateCode(Javascript);
+          break;
+      }
     }
+
   }, [language, C, Cpp, Python, Java, Javascript]);
 
   // language prop이 바뀔 때마다 해당 언어에 맞는 CodeMirror extension 업데이트

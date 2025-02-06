@@ -33,7 +33,7 @@ export default function LoginPage() {
 const LoginForm = React.forwardRef((props, ref) => {
   return (
     <form
-      action={`${process.env.NEXT_PUBLIC_BACKEND_URL}/account/v1/auth/social/token`}
+      action={`${process.env.NEXT_PUBLIC_BACKEND_URL}/account/v1/auth/token`}
       method="POST"
       className="hidden"
       ref={ref}

@@ -32,6 +32,7 @@ import Strike from "@tiptap/extension-strike";
 import Subscript from "@tiptap/extension-subscript";
 import Superscript from "@tiptap/extension-superscript";
 import {Heading} from "@tiptap/extension-heading";
+import {Placeholder} from "@tiptap/extension-placeholder";
 
 const baseClasses = 'p-2 rounded';
 const activeClasses = 'bg-purple-500 hover:bg-purple-600';
@@ -77,7 +78,8 @@ Heading.configure({
   levels: [1, 2, 3]
 })
 
-const TextEditor = () => {
+const TextEditor = ({ className, placeholder, onChange: handleChange }) => {
+
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -97,16 +99,20 @@ const TextEditor = () => {
       BulletList,
       Strike,
       Superscript,
-      Subscript
+      Subscript,
+      Placeholder.configure({
+        placeholder: placeholder
+      })
     ],
     editorProps: {
       attributes: {
-        class: 'prose w-screen whitespace-pre-wrap p-4'
+        class: `prose whitespace-pre-wrap p-4 ${className}`,
       }
     },
-    content: '<p>Hello World! 🌎️</p>',
-    autofocus: true,
-    injectCSS: false
+    content: '',
+    onUpdate: ({ editor }) => {
+      handleChange(editor.getHTML());
+    }
   })
 
   if (!editor) {
@@ -116,7 +122,7 @@ const TextEditor = () => {
   return (
     <>
       <BubbleMenu editor={editor}>
-        <div className="bg-white border border-gray-200 rounded-lg shadow inline-flex p-1">
+        <div className={`bg-white border border-gray-200 rounded-lg shadow inline-flex p-1`}>
           <MenuButton editor={editor} type={'heading'} typeProps={{level: 1}} toggleMethod={'toggleHeading'}>
             <RiH1/>
           </MenuButton>

@@ -5,8 +5,15 @@ import api from "@/axiosConfig";
 export const checkAuth = createAsyncThunk(
   'auth/checkAuth',
   async () => {
-    const response = await api.get('/account/v1/user');
-    return response.data.msg;
+    const response = await api.get('/account/v1/user/validation');
+
+    // validation이 성공(true)이면 추가 요청을 보냄
+    if (response.data.status === true) {
+      const userResponse = await api.get('/account/v1/user');
+      console.log(userResponse.data); // 결과값 로그
+    }
+
+    return response.data.status;
   }
 );
 
@@ -20,7 +27,6 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-
     login: (state) => {
       state.isLoggedIn = true;
     },
