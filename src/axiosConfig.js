@@ -25,7 +25,7 @@ api.interceptors.response.use(
         } catch (err) {
           console.log('토큰 리프레시 요청에 실패했습니다.', err);
         }
-      } else if (errorMessage === 'refresh_token required.') {
+      } else if (errorMessage === 'refresh token required.') {
         handleLogout();
       }
     }
