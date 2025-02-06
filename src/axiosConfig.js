@@ -11,7 +11,6 @@ api.interceptors.response.use(
   async error => {
     // 에러가 발생했을 때 에러 객체를 먼저 로그로 확인
     console.log('API 에러:', error);
-    // console.log('에러 응답 데이터:', error?.response?.data);
 
     // 에러 응답이 있고, status가 401이면
     if (error?.response?.status === 401) {
