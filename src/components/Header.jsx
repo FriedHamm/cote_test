@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import {Bars3Icon, XMarkIcon} from "@heroicons/react/24/outline";
 import {Dialog, DialogPanel} from "@headlessui/react";
+import {usePathname} from "next/navigation";
 
 const navigation = [
   { name: '코딩테스트', href: '/problems' },
@@ -10,6 +11,9 @@ const navigation = [
 ]
 
 export default function Header() {
+  const pathname = usePathname();
+
+  if (pathname.split('/')[1] === 'problem') return null;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (

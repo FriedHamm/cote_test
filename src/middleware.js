@@ -1,22 +1,26 @@
 import { NextResponse } from 'next/server';
 
 export function middleware(request) {
+  console.log('실행됨')
   // 매 요청마다 새로운 nonce를 생성
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
 
   // CSP 헤더 문자열을 생성하는데, 여기서 'nonce-${nonce}'를 삽입함.
   const cspHeader = `
-    default-src 'self';
-    script-src 'self' 'nonce-${nonce}' 'strict-dynamic';
-    style-src 'self' 'nonce-${nonce}';
-    img-src 'self' blob: data:;
-    font-src 'self';
-    object-src 'none';
-    base-uri 'self';
-    form-action 'self';
-    frame-ancestors 'none';
-    upgrade-insecure-requests;
-  `
+  default-src 'self';
+  script-src 'self' 'nonce-${nonce}' 'strict-dynamic';
+  style-src 'self' 'unsafe-inline';
+  img-src 'self' data:;
+  font-src 'self';
+  connect-src 'self' https://nossidev.run.goorm.site;
+  object-src 'none';
+  media-src 'self';
+  frame-src 'self';
+  form-action 'self' https://nossidev.run.goorm.site;
+  base-uri 'self';
+  frame-ancestors 'none';
+  upgrade-insecure-requests;
+`
     .replace(/\s{2,}/g, ' ')
     .trim();
 

@@ -1,12 +1,10 @@
 'use client'
 import Link from "next/link";
-import Header from "@/components/Header";
 
 export default function HeroSection() {
 
   return (
     <div className="bg-[#FFFAF0]">
-      <Header/>
       <div className="relative isolate px-6 pt-14 lg:px-8">
         <div
           aria-hidden="true"

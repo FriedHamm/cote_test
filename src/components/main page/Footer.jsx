@@ -1,3 +1,6 @@
+'use client'
+import {usePathname} from "next/navigation";
+
 const navigation = {
   main: [
     { name: '개인정보 처리방침', href: '/privacy' },
@@ -46,6 +49,10 @@ const navigation = {
 }
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  if (pathname.split('/')[1] === 'problem') return null;
+
   return (
     <footer className="bg-[#FAFFF0]">
       <div className="mx-auto max-w-7xl overflow-hidden px-6 py-20 sm:py-24 lg:px-8">

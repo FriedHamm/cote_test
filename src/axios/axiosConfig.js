@@ -18,15 +18,16 @@ api.interceptors.response.use(
       console.error(errorMessage);
 
       if (errorMessage === 'access token required.') {
-        // 기존 요청: access token required 상황일 때 토큰 리프레시 요청
         try {
           await api.post('account/v1/auth/token/refreshment');
-          console.log('토큰 리프레시 요청이 성공했습니다.');
+          console.log('토큰 리프레시 요청이 성공했습니다.'); // 엑세스 토큰 재발급의 경우에는 이미 로그인이 된 상태이므로, 상태를 건드릴 필요는 없음
         } catch (err) {
-          console.log('토큰 리프레시 요청에 실패했습니다.', err);
+          console.log('토큰 리프레시 요청에 실패했습니다.', err); // 이 경우에는 바로 로그아웃 처리를 해야할듯
+          handleLogout(); // 강제 로그아웃 시켜버림.. 일단 이렇게 처리하도록 하겠음
         }
       } else if (errorMessage === 'refresh token required.') {
         handleLogout();
+        // 이 경우는 엑세스 토큰이 필요한 요청을 했는데 401이 넘어왔고 재발급 받으려 했는데 리프레시가 없는 경우임. 강제 로그아웃.
       }
     }
     return Promise.reject(error);

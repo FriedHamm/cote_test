@@ -3,11 +3,10 @@ import {Panel, PanelGroup, PanelResizeHandle} from "react-resizable-panels";
 import CodeEditor from "@/app/problem/CodeEditor";
 import ProblemNav from "@/app/problem/ProblemNav";
 import {useEffect, useState} from "react";
-import {MdDensityMedium} from "react-icons/md";
-import {ToggleHeader} from "@/components/ConditionalHeader";
 import CodeEditorNavbar from "@/app/problem/CodeEditorNavbar";
 import Console from "@/app/problem/Console";
 import axios from "axios";
+import BreadCrumb from "@/app/problem/BreadCrumb";
 
 export default function ProblemLayout({children}) {
   const [language, setLanguage] = useState('Javascript');
@@ -21,17 +20,15 @@ export default function ProblemLayout({children}) {
   }
 
   return (
-    <div className={`sm:flex bg-[#FFF0F0] h-screen overflow-auto flex-col transition-all duration-500 overflow-x-scroll overflow-y-scroll ${
-      isOpen ? "pt-[79px]" : "pt-0"
-    }`}>
-      <ToggleHeader isOpen={isOpen}/>
-      <button className="sm:mt-4 flex justify-center" onClick={handleOpenClose}><MdDensityMedium/></button>
-      <PanelGroup direction="horizontal" className="h-full flex-grow p-4">
-        <Panel defaultSize={40} minSize={30} className="rounded-lg min-w-[540px] w-full h-full bg-[#FFFAF0]">
+    <div className="bg-[#FFF0F0] h-full pt-8">
+      {/*problemName 나중에 백엔드에서 데이터 받아와서 처리해야함*/}
+      <BreadCrumb problemName="Two Sum"/>
+      <PanelGroup direction="horizontal" className="h-full p-3">
+        <Panel defaultSize={50} minSize={30} className="rounded-lg w-full h-full bg-[#FFFAF0]">
           <ProblemNav/>
           {children}
         </Panel>
-        <PanelResizeHandle className="w-2.5 min-w-2.5"/>
+        <PanelResizeHandle className="w-2.5 min-w-2.5 hidden md:block"/>
         <CodeEditorContainer language={language} onLanguageChange={handleLanguageChange}/>
       </PanelGroup>
     </div>
@@ -83,7 +80,7 @@ function CodeEditorContainer({ language, onLanguageChange }) {
   }, []);
 
   return (
-    <Panel defaultSize={70} minSize={30} className="rounded-lg min-w-[540px]">
+    <Panel defaultSize={50} minSize={30} className="rounded-lg hidden md:block">
       <PanelGroup direction="vertical">
         <Panel defaultSize={50} minSize={30} className="w-full h-full rounded-lg flex flex-col">
           <CodeEditorNavbar onLanguageChange={onLanguageChange} />
