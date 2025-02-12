@@ -2,13 +2,21 @@
 import { useState } from 'react';
 import TextEditor from "@/components/texteditor/TextEditor";
 import CodeEditor from "@/app/problem/CodeEditor";
+import CodeEditorNavbar from "@/app/problem/CodeEditorNavbar";
 
 export default function CreateProblem() {
-  // CreateProblem에서 모든 상태를 관리
+  // 문제 관련 상태
   const [problemName, setProblemName] = useState("");
   const [problemDescription, setProblemDescription] = useState("");
   const [exampleTestCases, setExampleTestCases] = useState("");
   const [internalTestCases, setInternalTestCases] = useState("");
+
+  // 각 언어별 템플릿 코드 상태
+  const [c, setC] = useState("");
+  const [cpp, setCpp] = useState("");
+  const [python, setPython] = useState("");
+  const [java, setJava] = useState("");
+  const [javascript, setJavascript] = useState("");
 
   // TextEditor에서 호출할 콜백 함수
   const handleDescriptionChange = (description) => {
@@ -16,12 +24,17 @@ export default function CreateProblem() {
   };
 
   const handleSubmit = () => {
-    // 상태값을 콘솔에 출력 (필요시 실제 제출 로직 추가)
+    // 모든 상태값을 콘솔에 출력 (필요시 실제 제출 로직 추가)
     console.log({
       problemName,
       problemDescription,
       exampleTestCases,
       internalTestCases,
+      c,
+      cpp,
+      python,
+      java,
+      javascript,
     });
   };
 
@@ -36,6 +49,17 @@ export default function CreateProblem() {
         internalTestCases={internalTestCases}
         setInternalTestCases={setInternalTestCases}
         handleSubmit={handleSubmit}
+        // 추가: 언어별 상태와 set 함수 전달
+        c={c}
+        setC={setC}
+        cpp={cpp}
+        setCpp={setCpp}
+        java={java}
+        setJava={setJava}
+        javascript={javascript}
+        setJavascript={setJavascript}
+        python={python}
+        setPython={setPython}
       />
       <ProblemPreview problemDescription={problemDescription} />
     </div>
@@ -50,7 +74,18 @@ function ProblemInputForm({
                             setExampleTestCases,
                             internalTestCases,
                             setInternalTestCases,
-                            handleSubmit
+                            handleSubmit,
+                            // 언어 관련 props 추가
+                            c,
+                            setC,
+                            cpp,
+                            setCpp,
+                            java,
+                            setJava,
+                            javascript,
+                            setJavascript,
+                            python,
+                            setPython,
                           }) {
   return (
     <div className="p-6 bg-white rounded border-r shadow-md w-2/5 min-w-96 overflow-y-auto flex gap-4 flex-col">
@@ -85,11 +120,11 @@ function ProblemInputForm({
       <div>
         <p className="text-gray-700 font-medium mb-2">언어 선택 및 템플릿 코드</p>
         <ul className="flex flex-col gap-2">
-          <LanguageItem languageName="C" />
-          <LanguageItem languageName="C++" />
-          <LanguageItem languageName="Java" />
-          <LanguageItem languageName="Javascript" />
-          <LanguageItem languageName="Python" />
+          <LanguageItem languageName="C" code={c} onCodeChange={setC} />
+          <LanguageItem languageName="C++" code={cpp} onCodeChange={setCpp} />
+          <LanguageItem languageName="Java" code={java} onCodeChange={setJava} />
+          <LanguageItem languageName="Javascript" code={javascript} onCodeChange={setJavascript} />
+          <LanguageItem languageName="Python" code={python} onCodeChange={setPython} />
         </ul>
       </div>
 
@@ -135,9 +170,45 @@ function ProblemInputForm({
   );
 }
 
+function LanguageItem({ languageName, code, onCodeChange }) {
+  const [enabled, setEnabled] = useState(false);
+
+  const toggle = () => {
+    setEnabled((prev) => !prev);
+  };
+
+  return (
+    <li className="flex flex-col gap-2">
+      <div className="flex flex-col border p-4 rounded">
+        <div className="flex items-center justify-between">
+          <span>{languageName}</span>
+          <button
+            onClick={toggle}
+            className={`relative inline-flex items-center h-6 w-11 rounded-full transition-colors focus:outline-none
+              ${enabled ? "bg-blue-600" : "bg-gray-300"}`}
+          >
+            <span
+              className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform ${
+                enabled ? "translate-x-6" : "translate-x-1"
+              }`}
+            />
+          </button>
+        </div>
+        <div
+          className={`p-4 ${
+            enabled ? "block" : "hidden"
+          }`}
+        >
+          <CodeEditor language={languageName} code={code} onCodeChange={onCodeChange} />
+        </div>
+      </div>
+    </li>
+  );
+}
+
 function ProblemPreview({ problemDescription }) {
   return (
-    <div className="bg-[#FFFAF0] w-3/5 flex flex-col border-l">
+    <div className="bg-[#FFFAF0] w-3/5 flex flex-col border-l min-w-[600px]">
       <p className="bg-[#F7F7F7] opacity-55 p-2 border-b">문제 미리보기</p>
       <div className="flex-1 flex">
         <div
@@ -145,65 +216,12 @@ function ProblemPreview({ problemDescription }) {
           dangerouslySetInnerHTML={{ __html: problemDescription }}
         ></div>
         <div className="flex flex-col flex-1 border-l">
-          <div className="flex-1 border-b"></div>
+          <div className="flex-1 border-b flex flex-col">
+            <CodeEditorNavbar/>
+            <CodeEditor language="C" />
+          </div>
           <div className="flex-1 border-t"></div>
         </div>
-      </div>
-    </div>
-  );
-}
-
-// LanguageItem 컴포넌트는 언어 이름과 토글 버튼을 보여주며,
-// 토글 버튼을 누르면 모달이 나타나고, 모달 안에서 CodeEditor를 통해 템플릿 코드를 작성할 수 있습니다.
-function LanguageItem({ languageName }) {
-  const [enabled, setEnabled] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-
-  const toggle = () => {
-    setEnabled((prev) => !prev);
-    // 토글을 활성화할 때 모달을 열고, 비활성화하면 닫습니다.
-    if (!enabled) {
-      setShowModal(true);
-    } else {
-      setShowModal(false);
-    }
-  };
-
-  return (
-    <>
-      <li className="flex items-center justify-between border p-4 rounded">
-        <div className="flex items-center gap-2">
-          <span>{languageName}</span>
-        </div>
-        <button
-          onClick={toggle}
-          className={`relative inline-flex items-center h-6 w-11 rounded-full transition-colors focus:outline-none
-            ${enabled ? 'bg-blue-600' : 'bg-gray-300'}`}
-        >
-          <span
-            className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform 
-              ${enabled ? 'translate-x-6' : 'translate-x-1'}`}
-          />
-        </button>
-      </li>
-      {showModal && (
-        <Modal onClose={() => setShowModal(false)}>
-          <h2 className="text-xl font-bold mb-4">{languageName} Template Code</h2>
-          <CodeEditor language={languageName} />
-        </Modal>
-      )}
-    </>
-  );
-}
-
-function Modal({ children, onClose }) {
-  return (
-    <div className="fixed inset-0 flex items-center justify-center z-50">
-      {/* 배경 오버레이 */}
-      <div className="absolute inset-0 bg-black opacity-50" onClick={onClose}></div>
-      {/* 모달 내용 */}
-      <div className="relative bg-white p-6 rounded shadow-lg z-10 w-11/12 md:w-1/2">
-        {children}
       </div>
     </div>
   );

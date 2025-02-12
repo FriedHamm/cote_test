@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 
-export function middleware(request) {
+export function middleware() {
+  console.log('[middleware] >>> RUNNING');
   // 나중에 필요하면 적용할 것
   // 보통 외부 script나 이미지에 nonce를 적용해서 보안을 강화하기 위함
   // const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
@@ -9,15 +10,20 @@ export function middleware(request) {
   // strict-dynamic은 고민해봐야할듯
   // 나중에 blob을 사용해야 할 일이 생길 수도 있음. blob을 사용하면, 미리보기 기능같은 거?.. 그런게 가능함. 혹은... 브라우저에서의 작업물을 파일로 만들어줄때나?..
   const cspHeader = `
-    default-src 'self'; 
-    script-src 'self' 'strict-dynamic';
+    default-src 'self';
+    script-src 'self';
     style-src 'self';
     img-src 'self';
+    connect-src 'self' https://nossidev.run.goorm.site;
     font-src 'self';
-    object-src 'none';
+    object-src 'self';
+    media-src 'self';
+    frame-src 'self';
+    worker-src 'self';
+    manifest-src 'self';
     base-uri 'self';
-    form-action 'self';
-    frame-ancestors 'none';
+    form-action 'self' https://nossidev.run.goorm.site;
+    frame-ancestors 'self';
     upgrade-insecure-requests;
   `
 

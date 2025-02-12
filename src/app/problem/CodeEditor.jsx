@@ -27,7 +27,7 @@ const disableAutocomplete = autocompletion({
 export default function CodeEditor({
                                      language,
                                      templateCode,
-                                     onTemplateCodeChange: setTemplateCode,
+                                     onCodeChange: setCode,
                                      C,
                                      Javascript,
                                      Java,
@@ -39,23 +39,23 @@ export default function CodeEditor({
 
   // language 혹은 템플릿 코드 props가 변경될 때마다 templateCode 업데이트
   useEffect(() => {
-    if (setTemplateCode) {
+    if (setCode) {
       switch (language) {
         case "C":
-          setTemplateCode(C);
+          setCode(C);
           break;
         case "C++":
-          setTemplateCode(Cpp);
+          setCode(Cpp);
           break;
         case "Python":
-          setTemplateCode(Python);
+          setCode(Python);
           break;
         case "Java":
-          setTemplateCode(Java);
+          setCode(Java);
           break;
         case "Javascript":
         default:
-          setTemplateCode(Javascript);
+          setCode(Javascript);
           break;
       }
     }
@@ -69,7 +69,7 @@ export default function CodeEditor({
 
   // onChange 콜백은 CodeMirror에서 전달하는 값(코드 텍스트)을 받아 templateCode 상태를 업데이트합니다.
   const handleChange = (value) => {
-    setTemplateCode(value);
+    setCode(value);
   };
 
   return (

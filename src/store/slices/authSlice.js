@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from "@/axiosConfig";
+import api from "@/axios/axiosConfig";
 
 // 백엔드 API를 호출해 로그인 상태를 확인하는 thunk
 export const checkAuth = createAsyncThunk(

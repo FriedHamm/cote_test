@@ -21,11 +21,11 @@ export default function ProblemLayout({children}) {
   }
 
   return (
-    <div className={`bg-[#FFF0F0] h-screen overflow-auto flex flex-col transition-all duration-500  ${
+    <div className={`sm:flex bg-[#FFF0F0] h-screen overflow-auto flex-col transition-all duration-500 overflow-x-scroll overflow-y-scroll ${
       isOpen ? "pt-[79px]" : "pt-0"
     }`}>
       <ToggleHeader isOpen={isOpen}/>
-      <button className="mt-4 flex justify-center" onClick={handleOpenClose}><MdDensityMedium/></button>
+      <button className="sm:mt-4 flex justify-center" onClick={handleOpenClose}><MdDensityMedium/></button>
       <PanelGroup direction="horizontal" className="h-full flex-grow p-4">
         <Panel defaultSize={40} minSize={30} className="rounded-lg min-w-[540px] w-full h-full bg-[#FFFAF0]">
           <ProblemNav/>
@@ -90,7 +90,7 @@ function CodeEditorContainer({ language, onLanguageChange }) {
           <CodeEditor
             language={language}
             templateCode={templateCode}                // 현재 templateCode 전달
-            onTemplateCodeChange={setTemplateCode}       // 상태 변경 콜백 전달
+            onCodeChange={setTemplateCode}       // 상태 변경 콜백 전달
             C={templates.C}
             Javascript={templates.Javascript}
             Java={templates.Java}
