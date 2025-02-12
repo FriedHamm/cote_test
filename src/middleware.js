@@ -1,47 +1,37 @@
-import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server';
 
-export function middleware() {
-  console.log('[middleware] >>> RUNNING');
-  // 나중에 필요하면 적용할 것
-  // 보통 외부 script나 이미지에 nonce를 적용해서 보안을 강화하기 위함
-  // const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
+export function middleware(request) {
+  // 매 요청마다 새로운 nonce를 생성
+  const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
 
-  // default-src, img-src, form-action은 백엔드도 허용해야 함
-  // strict-dynamic은 고민해봐야할듯
-  // 나중에 blob을 사용해야 할 일이 생길 수도 있음. blob을 사용하면, 미리보기 기능같은 거?.. 그런게 가능함. 혹은... 브라우저에서의 작업물을 파일로 만들어줄때나?..
+  // CSP 헤더 문자열을 생성하는데, 여기서 'nonce-${nonce}'를 삽입함.
   const cspHeader = `
     default-src 'self';
-    script-src 'self';
-    style-src 'self';
-    img-src 'self';
-    connect-src 'self' https://nossidev.run.goorm.site;
+    script-src 'self' 'nonce-${nonce}' 'strict-dynamic';
+    style-src 'self' 'nonce-${nonce}';
+    img-src 'self' blob: data:;
     font-src 'self';
-    object-src 'self';
-    media-src 'self';
-    frame-src 'self';
-    worker-src 'self';
-    manifest-src 'self';
+    object-src 'none';
     base-uri 'self';
-    form-action 'self' https://nossidev.run.goorm.site;
-    frame-ancestors 'self';
+    form-action 'self';
+    frame-ancestors 'none';
     upgrade-insecure-requests;
   `
-
-  // Clean up the CSP header
-  const contentSecurityPolicyHeaderValue = cspHeader
     .replace(/\s{2,}/g, ' ')
-    .trim()
+    .trim();
 
-  const response = NextResponse.next()
+  // 기존 요청 헤더를 복제하여 nonce와 CSP 헤더를 추가
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-nonce', nonce);
+  requestHeaders.set('Content-Security-Policy', cspHeader);
 
-  // Set the CSP header on the response
-  response.headers.set(
-    'Content-Security-Policy',
-    contentSecurityPolicyHeaderValue
-  )
+  // 수정된 요청 헤더를 포함한 NextResponse 객체 생성
+  const response = NextResponse.next({
+    request: { headers: requestHeaders },
+  });
 
-  return response
+  // 브라우저로 전달되는 응답 헤더에도 동일한 CSP 헤더를 명시적으로 설정
+  response.headers.set('Content-Security-Policy', cspHeader);
+
+  return response;
 }
-
-// config는 나중에 필요하면 적용할 것
-// 지금은 모든 요청에 대해서 미들웨어 실행

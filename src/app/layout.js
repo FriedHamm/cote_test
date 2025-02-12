@@ -5,6 +5,8 @@ import ProviderWrapper from "@/app/ProviderWrapper";
 import Footer from "@/components/main page/Footer";
 import Header from "@/components/Header";
 
+
+
 const mainFont = Noto_Sans_KR({
   weight: ['400', '500', '600'],
   style: 'normal',
