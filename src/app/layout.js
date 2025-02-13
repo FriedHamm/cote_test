@@ -5,7 +5,7 @@ import ProviderWrapper from "@/app/ProviderWrapper";
 import Footer from "@/components/main page/Footer";
 import Header from "@/components/Header";
 
-
+export const dynamic = "force-dynamic";
 
 const mainFont = Noto_Sans_KR({
   weight: ['400', '500', '600'],
