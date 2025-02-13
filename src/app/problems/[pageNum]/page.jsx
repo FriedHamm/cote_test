@@ -1,4 +1,3 @@
-import Pagination from "rc-pagination";
 import PaginationWrapper from "@/components/Pagination";
 
 export default function Problems() {
