@@ -60,7 +60,6 @@ export default function RootLayout({children}) {
       <link rel="icon" href="/logo.webp" sizes="any"/>
       <body className={`
           ${mainFont.variable} 
-          
           font-mainFont
           font-normal
           h-full
