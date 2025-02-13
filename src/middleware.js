@@ -8,7 +8,7 @@ export function middleware(request) {
   // CSP 헤더 문자열을 생성하는데, 여기서 'nonce-${nonce}'를 삽입함.
   const cspHeader = `
   default-src 'self';
-  script-src 'self' 'nonce-${nonce}' 'strict-dynamic';
+  script-src 'self' 'nonce-${nonce}';
   style-src 'self' 'unsafe-inline';
   img-src 'self' data:;
   font-src 'self';
