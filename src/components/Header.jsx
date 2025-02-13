@@ -32,7 +32,10 @@ export default function Header() {
         <div className="flex lg:hidden">
           <button
             type="button"
-            onClick={() => setMobileMenuOpen(true)}
+            onClick={(e) => {
+              console.log("Hamburger clicked", e);
+              setMobileMenuOpen(true);
+            }}
             className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
           >
             <span className="sr-only">Open main menu</span>
