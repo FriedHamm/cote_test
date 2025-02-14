@@ -1,20 +1,23 @@
 'use client'
 import Link from "next/link";
-import { useState } from "react";
+import {useState} from "react";
 import {Bars3Icon, XMarkIcon} from "@heroicons/react/24/outline";
-import {Dialog, DialogPanel} from "@headlessui/react";
+import {Dialog, DialogBackdrop, DialogPanel} from "@headlessui/react";
 import {usePathname} from "next/navigation";
+import {useSelector} from "react-redux";
+import LoginMenu from "@/components/LoginMenu";
 
 const navigation = [
-  { name: '코딩테스트', href: '/problems' },
-  { name: '커뮤니티', href: '#' }
+  {name: '코딩테스트', href: '/problems'},
+  {name: '커뮤니티', href: '#'}
 ]
 
 export default function Header() {
+  const {isLoggedIn, role} = useSelector(state => state.auth);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const pathname = usePathname();
+  const pathname = usePathname().split('/')[1];
 
-  if (pathname.split('/')[1] === 'problem') return null;
+  if (pathname === 'problem') return null;
 
   return (
     <header className="absolute inset-x-0 top-0 z-50">
@@ -29,11 +32,11 @@ export default function Header() {
             />
           </Link>
         </div>
+        {/*{모바일에서만 나오는 버튼임}*/}
         <div className="flex lg:hidden">
           <button
             type="button"
             onClick={(e) => {
-              console.log("Hamburger clicked", e);
               setMobileMenuOpen(true);
             }}
             className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
@@ -50,17 +53,26 @@ export default function Header() {
           ))}
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <Link href="/account/sign-in" className="text-sm/6 font-semibold text-gray-900">
-            로그인 <span aria-hidden="true">&rarr;</span>
-          </Link>
+          {isLoggedIn ?
+            <LoginMenu />
+            :
+            <Link href="/account/sign-in" className="text-sm/6 font-semibold text-gray-900">
+              로그인 <span aria-hidden="true">&rarr;</span>
+            </Link>}
         </div>
       </nav>
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
+        <DialogBackdrop
+          transition
+          className="fixed inset-0 bg-gray-900/80 transition-opacity duration-300 ease-linear data-[closed]:opacity-0"
+        />
         <div className="fixed inset-0 z-50 pointer-events-none"/>
         <DialogPanel
-          className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+          transition
+          className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10
+          transform transition duration-300 ease-in-out data-[closed]:translate-x-full">
           <div className="flex items-center justify-between">
-            <Link href="/" onClick={() => setMobileMenuOpen(false)}className="-m-1.5 p-1.5">
+            <Link href="/" onClick={() => setMobileMenuOpen(false)} className="-m-1.5 p-1.5">
               <span className="sr-only">Your Company</span>
               <img
                 alt=""

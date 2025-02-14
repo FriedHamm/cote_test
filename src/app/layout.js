@@ -4,6 +4,7 @@ import {Noto_Sans_KR} from "next/font/google";
 import ProviderWrapper from "@/app/ProviderWrapper";
 import Footer from "@/components/main page/Footer";
 import Header from "@/components/Header";
+import AlertContainer from "@/components/alerts/AlertContainer";
 
 export const dynamic = "force-dynamic";
 
@@ -14,34 +15,6 @@ const mainFont = Noto_Sans_KR({
   variable: '--font-main',
   subsets: ['latin']
 })
-
-// const heroMain = localFont(
-//   {
-//     src: [
-//       {
-//         path: '../../public/fonts/SpoqaHanSansNeo-Bold.woff2',
-//         weight: '700',
-//         style: 'normal'
-//       }
-//     ],
-//     display: 'swap',
-//     variable: '--font-spoqa-bold'
-//   }
-// )
-//
-// const heroSub = localFont(
-//   {
-//     src: [
-//       {
-//         path: '../../public/fonts/SpoqaHanSansNeo-Regular.woff2',
-//         weight: '400',
-//         style: 'normal'
-//       }
-//     ],
-//     display: 'swap',
-//     variable: '--font-spoqa-regular'
-//   }
-// )
 
 export const metadata = {
   title: "Nossi.Dev",
@@ -65,6 +38,7 @@ export default function RootLayout({children}) {
           h-full
         `}>
         <ProviderWrapper>
+          <AlertContainer/>
           <Header/>
           {children}
           <Footer/>
