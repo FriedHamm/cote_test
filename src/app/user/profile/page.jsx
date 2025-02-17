@@ -6,7 +6,7 @@ import {useDispatch} from "react-redux";
 import {logout} from "@/store/slices/authSlice";
 
 export default function ProfilePage() {
-  const [userName, setUserName] = useState('김우현님');
+  const [userName, setUserName] = useState('');
   const router = useRouter();
   const dispatch = useDispatch();
 

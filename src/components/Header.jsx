@@ -70,13 +70,15 @@ export default function Header() {
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           {isLoggedIn ?
-            <LoginMenu onLogout={onLogout} isLoggedIn={isLoggedIn} />
+            <LoginMenu onLogout={onLogout} isLoggedIn={isLoggedIn}/>
             :
             <Link href="/account/sign-in" className="text-sm/6 font-semibold text-gray-900">
               로그인 <span aria-hidden="true">&rarr;</span>
             </Link>}
         </div>
       </nav>
+
+      {/*여기서부터는 모바일임*/}
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
         <DialogBackdrop
           transition
@@ -120,13 +122,15 @@ export default function Header() {
                 ))}
               </div>
               <div className="py-6">
-                <Link
-                  href="/account/sign-in"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-                >
-                  로그인
-                </Link>
+                {!isLoggedIn &&
+                  <Link
+                    href="/account/sign-in"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                  >
+                    로그인
+                  </Link>
+                }
                 {isLoggedIn &&
                   <>
                     <Link
