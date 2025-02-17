@@ -70,7 +70,7 @@ export default function Header() {
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           {isLoggedIn ?
-            <LoginMenu onLogout={onLogout} />
+            <LoginMenu onLogout={onLogout} isLoggedIn={isLoggedIn} />
             :
             <Link href="/account/sign-in" className="text-sm/6 font-semibold text-gray-900">
               로그인 <span aria-hidden="true">&rarr;</span>
