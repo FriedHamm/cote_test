@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 
 export function middleware(request) {
-  console.log('실행됨')
   // 매 요청마다 새로운 nonce를 생성
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
 
@@ -16,7 +15,7 @@ export function middleware(request) {
   object-src 'none';
   media-src 'self';
   frame-src 'self';
-  form-action 'self' https://nossidev.run.goorm.site https://*.kakao.com;
+  form-action 'self' https://nossidev.run.goorm.site https://*.kakao.com https://*.github.com;
   base-uri 'self';
   frame-ancestors 'none';
   upgrade-insecure-requests;
