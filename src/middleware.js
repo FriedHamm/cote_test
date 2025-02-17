@@ -15,7 +15,7 @@ export function middleware(request) {
   object-src 'none';
   media-src 'self';
   frame-src 'self';
-  form-action 'self' https://nossidev.run.goorm.site https://*.kakao.com https://*.github.com;
+  form-action 'self' https://nossidev.run.goorm.site https://*.kakao.com;
   base-uri 'self';
   frame-ancestors 'none';
   upgrade-insecure-requests;
