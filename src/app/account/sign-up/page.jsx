@@ -2,17 +2,37 @@
 import { useForm } from "react-hook-form";
 import api from "@/axios/axiosConfig";
 import { yupResolver } from "@hookform/resolvers/yup";
-import loginSchema from "@/yup/loginScheme";
+import signupScheme from "@/yup/signupScheme";
 
 export default function LoginPage() {
   const { register, handleSubmit, formState: { errors } } = useForm({
-    resolver: yupResolver(loginSchema),
+    resolver: yupResolver(signupScheme),
     mode: "onChange",
   });
 
-  const onSubmit = (data) => {
-    // api.post() 호출 등의 로직 구현
-    console.log(data);
+  const onSubmit = async (data) => {
+    try {
+      const response = await api.post("/account/v1/auth/token/registration", data);
+      if (response.status === 201) {
+        alert("회원가입에 성공하셨습니다.");
+        window.location.href = "https://cote.nossi.dev";
+      }
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+        if (status === 430) {
+          alert("입력하신 데이터의 형식이 올바르지 않습니다. 다시 확인해주세요.");
+        } else if (status === 409) {
+          alert("이미 가입된 이메일입니다.");
+        } else if (status === 500) {
+          alert("요청에 실패하였습니다. 다시 시도해주세요.");
+        } else {
+          alert(`알 수 없는 오류가 발생하였습니다. (Status: ${status})`);
+        }
+      } else {
+        alert("네트워크 오류가 발생하였습니다. 다시 시도해주세요.");
+      }
+    }
   };
 
   return (

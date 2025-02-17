@@ -2,20 +2,47 @@
 import { useForm } from "react-hook-form";
 import api from "@/axios/axiosConfig";
 import { yupResolver } from "@hookform/resolvers/yup";
-import loginSchema from "@/yup/loginScheme";
 import SocialLoginForm from "@/app/account/SocialLoginForm";
 import Link from "next/link";
 import {useRef} from "react";
+import loginScheme from "@/yup/loginScheme";
 
 export default function LoginPage() {
   const { register, handleSubmit, formState: { errors } } = useForm({
-    resolver: yupResolver(loginSchema)
+    resolver: yupResolver(loginScheme)
   });
   const formRef = useRef(null);
 
-  const onSubmit = (data) => {
-    // api.post() 호출 등의 로직 구현
-    console.log(data);
+  const onSubmit = async (data) => {
+    try {
+      const response = await api.post('account/v1/auth/token', data);
+      console.log(response);
+      location.href = 'https://cote.nossi.dev';
+      // 로그인 성공 시 추가 로직을 여기에 작성할 수 있습니다.
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+        // status code에 따른 alert 메시지 처리
+        if (status === 430) {
+          alert("올바른 요청이 아닙니다. 다시 시도해주세요.");
+        } else if (status === 401) {
+          alert("잘못된 이메일 또는 비밀번호입니다.");
+        } else if (status === 404) {
+          alert("해당 사용자가 존재하지 않습니다.");
+        } else if (status === 500) {
+          alert("요청에 실패하였습니다. 다시 시도해주세요.");
+        } else {
+          alert(`알 수 없는 오류가 발생하였습니다. (Status: ${status})`);
+        }
+      } else {
+        // error.response가 없는 경우 네트워크 에러일 가능성이 있습니다.
+        alert("네트워크 오류가 발생하였습니다. 다시 시도해주세요.");
+      }
+    }
+  };
+
+  const onError = (errors) => {
+    console.log("유효성 오류:", errors);
   };
 
   const handleKakaoLoginClick = () => {
@@ -27,7 +54,7 @@ export default function LoginPage() {
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-6">
         <h2 className="text-center text-2xl font-bold tracking-tight text-gray-900">
           로그인
         </h2>
