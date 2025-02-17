@@ -24,7 +24,7 @@ export default function Header() {
 
     try {
       const response = await api.post('account/v1/auth/token/revocation');
-      dispatch(logout);
+      dispatch(logout());
       alert('로그아웃 되었습니다.');
     } catch (error) {
       alert(error);

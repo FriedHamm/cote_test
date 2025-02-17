@@ -9,7 +9,7 @@ const SocialLoginForm = forwardRef(function SocialLoginForm({ provider = null },
       action={`${backend}/account/v1/auth/token`}
       className="hidden"
     >
-      <input type="hidden" name="provider" value="github" />
+      <input type="hidden" name="provider" value="kakao" />
     </form>
   );
 });
