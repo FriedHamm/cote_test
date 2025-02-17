@@ -5,20 +5,20 @@ import api from "@/axios/axiosConfig";
 export default function ProfilePage() {
   const [userName, setUserName] = useState('김우현님');
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await api.get('account/v1/user/profile');
-  //       console.log(response);
-  //       setUserName(response.data.username);
-  //     } catch (error) {
-  //       console.log(error);
-  //       alert('에러가 발생하였습니다. 다시 시도해주세요.');
-  //     }
-  //
-  //   }
-  //   fetchData()
-  // })
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get('account/v1/user/profile');
+        console.log(response);
+        setUserName(response.data.username);
+      } catch (error) {
+        console.log(error);
+        alert('에러가 발생하였습니다. 다시 시도해주세요.');
+      }
+
+    }
+    fetchData()
+  })
 
   return (
     <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 flex flex-col gap-6">
