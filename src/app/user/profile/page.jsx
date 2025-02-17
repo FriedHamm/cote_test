@@ -2,10 +2,25 @@
 import {useEffect, useState} from "react";
 import api from "@/axios/axiosConfig";
 import {useRouter} from "next/navigation";
+import {useDispatch} from "react-redux";
+import {logout} from "@/store/slices/authSlice";
 
 export default function ProfilePage() {
   const [userName, setUserName] = useState('김우현님');
   const router = useRouter();
+  const dispatch = useDispatch();
+
+  const onClick = async () => {
+    try {
+      const response = await api.delete('account/v1/user');
+      console.log(response);
+      dispatch(logout());
+      router.push('/');
+    } catch (error) {
+      alert(error);
+    }
+
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,7 +49,9 @@ export default function ProfilePage() {
       </div>
       <div>
         <h3 className="text-lg font-bold">회원 탈퇴</h3>
-        <div className="border rounded-lg bg-[#FFF0F0]">안녕하세욧</div>
+        <div className="border rounded-lg bg-[#FFF0F0]">
+          <button onClick={onClick}>탈퇴하기</button>
+        </div>
       </div>
     </div>
   )
