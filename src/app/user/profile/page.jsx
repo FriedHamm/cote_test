@@ -1,9 +1,11 @@
 'use client'
 import {useEffect, useState} from "react";
 import api from "@/axios/axiosConfig";
+import {useRouter} from "next/navigation";
 
 export default function ProfilePage() {
   const [userName, setUserName] = useState('김우현님');
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -14,10 +16,11 @@ export default function ProfilePage() {
       } catch (error) {
         console.log(error);
         alert('에러가 발생하였습니다. 다시 시도해주세요.');
+        router.back();
       }
 
     }
-    fetchData()
+    fetchData();
   })
 
   return (
