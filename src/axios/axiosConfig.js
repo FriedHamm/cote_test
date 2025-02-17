@@ -25,6 +25,7 @@ api.interceptors.response.use(
           handleLogout();
         }
       } else if (errorMessage === 'refresh token required.') {
+        console.log('뭔가 족버그가 밣생했습니다.,')
         handleLogout();
       }
     }

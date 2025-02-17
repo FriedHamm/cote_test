@@ -4,8 +4,10 @@ import {useState} from "react";
 import {Bars3Icon, XMarkIcon} from "@heroicons/react/24/outline";
 import {Dialog, DialogBackdrop, DialogPanel} from "@headlessui/react";
 import {usePathname} from "next/navigation";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import LoginMenu from "@/components/LoginMenu";
+import api from "@/axios/axiosConfig";
+import {logout} from "@/store/slices/authSlice";
 
 const navigation = [
   {name: '코딩테스트', href: '/problems'},
@@ -13,9 +15,23 @@ const navigation = [
 ]
 
 export default function Header() {
+  const dispatch = useDispatch();
   const {isLoggedIn, role} = useSelector(state => state.auth);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname().split('/')[1];
+
+  const onLogout = async () => {
+
+    try {
+      const response = await api.post('account/v1/auth/token/revocation');
+      dispatch(logout);
+      alert('로그아웃 되었습니다.');
+    } catch (error) {
+      alert(error);
+    }
+
+
+  }
 
   if (pathname === 'problem') return null;
 
@@ -54,7 +70,7 @@ export default function Header() {
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           {isLoggedIn ?
-            <LoginMenu />
+            <LoginMenu onLogout={onLogout} />
             :
             <Link href="/account/sign-in" className="text-sm/6 font-semibold text-gray-900">
               로그인 <span aria-hidden="true">&rarr;</span>
@@ -111,16 +127,26 @@ export default function Header() {
                 >
                   로그인
                 </Link>
+                {isLoggedIn &&
+                  <>
+                    <Link
+                      href="/user/profile"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                    >
+                      마이페이지
+                    </Link>
+                    <button
+                      onClick={onLogout}
+                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                    >
+                      로그아웃
+                    </button>
+                  </>
+                }
+
               </div>
-              <div className="py-6">
-                <Link
-                  href="/account/sign-in"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-                >
-                  로그아웃
-                </Link>
-              </div>
+
             </div>
           </div>
         </DialogPanel>

@@ -1,8 +1,8 @@
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
+import {Menu, MenuButton, MenuItem, MenuItems} from '@headlessui/react'
 import Link from "next/link";
 
 
-export default function LoginMenu() {
+export default function LoginMenu({onLogout, isLoggedIn}) {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
@@ -30,32 +30,17 @@ export default function LoginMenu() {
               마이페이지
             </Link>
           </MenuItem>
-          <MenuItem>
-            <Link
-              href="#"
-              className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
-            >
-              Support
-            </Link>
-          </MenuItem>
-          <MenuItem>
-            <a
-              href="#"
-              className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
-            >
-              License
-            </a>
-          </MenuItem>
-          <form action="#" method="POST">
+          {isLoggedIn &&
             <MenuItem>
               <button
-                type="submit"
+                type="button"
+                onClick={onLogout}
                 className="block w-full px-4 py-2 text-left text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
               >
                 Sign out
               </button>
             </MenuItem>
-          </form>
+          }
         </div>
       </MenuItems>
     </Menu>
