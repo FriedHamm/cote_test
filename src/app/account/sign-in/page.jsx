@@ -3,15 +3,26 @@ import { useForm } from "react-hook-form";
 import api from "@/axios/axiosConfig";
 import { yupResolver } from "@hookform/resolvers/yup";
 import loginSchema from "@/yup/loginScheme";
+import SocialLoginForm from "@/app/account/SocialLoginForm";
+import Link from "next/link";
+import {useRef} from "react";
 
 export default function LoginPage() {
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(loginSchema)
   });
+  const formRef = useRef(null);
 
   const onSubmit = (data) => {
     // api.post() 호출 등의 로직 구현
     console.log(data);
+  };
+
+  const handleKakaoLoginClick = () => {
+    // ref를 통해 폼을 찾아서 제출
+    if (formRef.current) {
+      formRef.current.submit();
+    }
   };
 
   return (
@@ -79,7 +90,7 @@ export default function LoginPage() {
         </div>
 
         <div className="mt-6">
-          <button className="block mx-auto">
+          <button className="block mx-auto" onClick={handleKakaoLoginClick}>
             <img src="/kakao_login.png" alt="카카오 로그인" />
           </button>
         </div>
@@ -87,10 +98,11 @@ export default function LoginPage() {
 
       <p className="mt-10 text-center text-sm text-gray-500">
         회원이 아닌가요?{' '}
-        <a href="/account/sign-up" className="font-semibold text-indigo-600 hover:text-indigo-500">
+        <Link href="/account/sign-up" className="font-semibold text-indigo-600 hover:text-indigo-500">
           지금 바로 회원가입을 해보세요!
-        </a>
+        </Link>
       </p>
+      <SocialLoginForm ref={formRef}/>
     </>
   );
 }

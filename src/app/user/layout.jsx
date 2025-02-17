@@ -13,19 +13,14 @@ import {useDispatch, useSelector} from "react-redux";
 import { useRouter } from "next/navigation";
 import {addAlert} from "@/store/slices/alertSlice";
 import {useEffect} from "react";
+import Link from "next/link";
 
-const navigation = [
-  {name: 'Dashboard', href: '#', icon: HomeIcon, current: true},
-  {name: 'Team', href: '#', icon: UsersIcon, current: false},
-  {name: 'Projects', href: '#', icon: FolderIcon, current: false},
-  {name: 'Calendar', href: '#', icon: CalendarIcon, current: false},
-  {name: 'Documents', href: '#', icon: DocumentDuplicateIcon, current: false},
-  {name: 'Reports', href: '#', icon: ChartPieIcon, current: false},
+const userInfo = [
+  {id: 1, name: '계정 관리', href: '/user/profile', current: false},
 ]
-const teams = [
-  {id: 1, name: 'Heroicons', href: '#', initial: 'H', current: false},
-  {id: 2, name: 'Tailwind Labs', href: '#', initial: 'T', current: false},
-  {id: 3, name: 'Workcation', href: '#', initial: 'W', current: false},
+
+const codingtest = [
+  {id: 1, name: '계정 관리', href: '/user/profile', current: false},
 ]
 
 function classNames(...classes) {
@@ -46,7 +41,7 @@ export default function UserLayout({children}) {
   }, [isLoggedIn, status, router, dispatch]);
 
   // 로그인 여부 확인이 진행중이면 로딩 컴포넌트나 null을 반환
-  if (status === 'loading') {
+  if (status === 'loading' && status === 'idle') {
     return null; // 또는 <Spinner /> 같은 로딩 컴포넌트를 보여줄 수 있음
   }
 
@@ -65,37 +60,11 @@ export default function UserLayout({children}) {
             <nav className="flex flex-1 flex-col">
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
                 <li>
-                  <ul role="list" className="-mx-2 space-y-1">
-                    {navigation.map((item) => (
-                      <li key={item.name}>
-                        <a
-                          href={item.href}
-                          className={classNames(
-                            item.current
-                              ? 'bg-gray-50 text-indigo-600'
-                              : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600',
-                            'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
-                          )}
-                        >
-                          <item.icon
-                            aria-hidden="true"
-                            className={classNames(
-                              item.current ? 'text-indigo-600' : 'text-gray-400 group-hover:text-indigo-600',
-                              'size-6 shrink-0',
-                            )}
-                          />
-                          {item.name}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </li>
-                <li>
-                  <div className="text-xs/6 font-semibold text-gray-400">Your teams</div>
+                  <div className="text-xs/6 font-semibold text-gray-400">내 정보</div>
                   <ul role="list" className="-mx-2 mt-2 space-y-1">
-                    {teams.map((team) => (
+                    {userInfo.map((team) => (
                       <li key={team.name}>
-                        <a
+                        <Link
                           href={team.href}
                           className={classNames(
                             team.current
@@ -104,18 +73,29 @@ export default function UserLayout({children}) {
                             'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
                           )}
                         >
-                          <span
-                            className={classNames(
-                              team.current
-                                ? 'border-indigo-600 text-indigo-600'
-                                : 'border-gray-200 text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600',
-                              'flex size-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium',
-                            )}
-                          >
-                            {team.initial}
-                          </span>
+
                           <span className="truncate">{team.name}</span>
-                        </a>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+                <li>
+                  <div className="text-xs/6 font-semibold text-gray-400">코딩테스트</div>
+                  <ul role="list" className="-mx-2 mt-2 space-y-1">
+                    {codingtest.map((team) => (
+                      <li key={team.name}>
+                        <Link
+                          href={team.href}
+                          className={classNames(
+                            team.current
+                              ? 'bg-gray-50 text-indigo-600'
+                              : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600',
+                            'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
+                          )}
+                        >
+                          <span className="truncate">{team.name}</span>
+                        </Link>
                       </li>
                     ))}
                   </ul>
@@ -126,7 +106,7 @@ export default function UserLayout({children}) {
         </div>
 
         <main className="lg:grow">
-          <div className="px-4 sm:px-6 lg:px-8">{children}</div>
+          {children}
         </main>
       </div>
     </div>
