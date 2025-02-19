@@ -31,7 +31,7 @@ export default function ProfilePage() {
       } catch (error) {
         console.log(error);
         alert(`에러가 발생하였습니다. 다시 시도해주세요. ${error}`);
-        router.back();
+        router.push('/');
       }
 
     }
