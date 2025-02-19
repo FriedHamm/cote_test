@@ -17,9 +17,30 @@ const mainFont = Noto_Sans_KR({
 })
 
 export const metadata = {
-  title: "Nossi.Dev",
-  description: "Nossi.Dev coding test & developer community"
-};
+  title: 'Nossi.Dev',
+  description: "Nossi.Dev는 개발자들을 위한 종합 플랫폼으로, 코딩테스트 연습과 커뮤니티를 통해 취업 및 이직 준비를 돕습니다. 최신 문제 풀이, 심도 있는 토론, 그리고 전문가 조언을 통해 여러분의 커리어를 한 단계 업그레이드하세요.",
+  openGraph: {
+    title: 'Nossi.Dev',
+    description: "Nossi.Dev는 개발자들을 위한 종합 플랫폼으로, 코딩테스트 연습과 커뮤니티를 통해 취업 및 이직 준비를 돕습니다. 최신 문제 풀이, 심도 있는 토론, 그리고 전문가 조언을 통해 여러분의 커리어를 한 단계 업그레이드하세요.",
+    url: 'https://cote.nossi.dev',
+    siteName: 'Nossi.Dev',
+    images: [
+      {
+        url: 'https://cote.nossi.dev/logo.webp',
+        width: 1200,
+        height: 630,
+        alt: 'Nossi.Dev 로고'
+      }
+    ],
+    locale: 'ko_KR',
+    type: 'website'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Nossi.Dev',
+    description: "Nossi.Dev는 개발자들을 위한 종합 플랫폼으로, 코딩테스트 연습과 커뮤니티를 통해 취업 및 이직 준비를 돕습니다. 최신 문제 풀이, 심도 있는 토론, 그리고 전문가 조언을 통해 여러분의 커리어를 한 단계 업그레이드하세요.",
+    images: ['https://cote.nossi.dev/logo.webp'],
+  }};
 
 export const viewport = {
   width: "device-width",

@@ -6,19 +6,24 @@ import SocialLoginForm from "@/app/account/SocialLoginForm";
 import Link from "next/link";
 import {useRef} from "react";
 import loginScheme from "@/yup/loginScheme";
+import {useRouter} from "next/navigation";
+import {useDispatch} from "react-redux";
+import {checkAuth} from "@/store/slices/authSlice";
 
 export default function LoginPage() {
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(loginScheme)
   });
   const formRef = useRef(null);
+  const router = useRouter();
+  const dispatch = useDispatch();
 
   const onSubmit = async (data) => {
     try {
       const response = await api.post('account/v1/auth/token', data);
       console.log(response);
-      location.href = 'https://cote.nossi.dev';
-      // 로그인 성공 시 추가 로직을 여기에 작성할 수 있습니다.
+      dispatch(checkAuth());
+      router.push('/')
     } catch (error) {
       if (error.response) {
         const status = error.response.status;

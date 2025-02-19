@@ -1,3 +1,9 @@
+export const metadata = {
+  title: {
+    default: '서비스 이용약관'
+  }
+}
+
 export default function TermsOfService() {
   return (
     <div className="min-h-screen bg-[#FFFAF0] px-4 pt-20 pb-6 text-gray-800">
