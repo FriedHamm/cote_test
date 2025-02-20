@@ -1,4 +1,3 @@
-// Description.js
 'use client';
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -21,9 +20,9 @@ export default function Description(props) {
   if (status === 'failed') return <div>Error: {error}</div>;
 
   return (
-    <div className="h-full w-full overflow-y-scroll prose p-4">
+    <div className="flex-grow overflow-y-scroll prose pt-5 pr-5 pl-5">
       <h2>{problem?.title}</h2>
-      <div className="pb-5" dangerouslySetInnerHTML={{ __html: problem?.content }}></div>
+      <div className="" dangerouslySetInnerHTML={{ __html: problem?.content }}></div>
 
     </div>
   );

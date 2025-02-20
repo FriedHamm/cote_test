@@ -1,5 +1,5 @@
 'use client'
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import {
   MdHistory,
@@ -9,7 +9,6 @@ import {
 } from "react-icons/md";
 
 export default function ProblemNav() {
-  // 현재 경로를 가져와서 배열의 4번째 항목(인덱스 3)을 초기 탭으로 사용
   const pathname = usePathname();
   const [curTab, setCurTab] = useState(pathname.split('/')[3]);
   const router = useRouter();
@@ -22,16 +21,20 @@ export default function ProblemNav() {
     router.push(`/problem/${problemId}/${tab}`);
   };
 
+  useEffect(() => {
+    setCurTab(pathname.split('/')[3]);
+  }, [pathname]);
+
   // 각 버튼에 필요한 정보를 배열로 정의
   const navItems = [
     { tab: "description", label: "문제 설명", icon: MdOutlineDescription },
     { tab: "solution-explanation", label: "문제 해설", icon: MdLightbulbOutline },
-    { tab: "community-solution", label: "커뮤니티 문제풀이", icon: MdPeopleOutline },
+    // { tab: "community-solution", label: "커뮤니티 문제풀이", icon: MdPeopleOutline },
     { tab: "submission", label: "제출 내역", icon: MdHistory }
   ];
 
   return (
-    <nav className="bg-[#FBF9F4] flex justify-between md:justify-start xl:gap-6 gap-3 px-4 py-2 border-b-[#F7F7F7] border-b border-t-lg overflow-x-scroll">
+    <nav aria-label="problem navigation" className="bg-[#FBF9F4] flex justify-between md:justify-start xl:gap-6 gap-3 px-4 py-2 border-b-[#F7F7F7] border-b border-t-lg overflow-x-scroll shrink-0">
       {navItems.map(({ tab, label, icon: Icon }) => (
         <button
           key={tab}
@@ -39,9 +42,10 @@ export default function ProblemNav() {
             curTab === tab ? "text-black" : "text-gray-500"
           }`}
           onClick={() => handleNavigation(tab)}
+          aria-current={tab === curTab ? 'page' : undefined}
         >
-          <Icon className="lg:w-6 lg:h-6 w-4 h-4" />
-          {label}
+          <Icon className="lg:w-6 lg:h-6 w-4 h-4" aria-hidden={true}/>
+          <span>{label}</span>
         </button>
       ))}
     </nav>

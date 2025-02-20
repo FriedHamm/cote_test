@@ -1,15 +1,14 @@
+'use client'
 import CodeMirror from "@uiw/react-codemirror";
-import {useEffect, useState} from "react";
 import {javascript} from "@codemirror/lang-javascript";
 import {cpp} from "@codemirror/lang-cpp";
 import {python} from "@codemirror/lang-python";
 import {java} from "@codemirror/lang-java";
-import {solarizedLight} from "@uiw/codemirror-themes-all";
+import {solarizedLight, solarizedDark, solarizedLightStyle} from "@uiw/codemirror-themes-all";
 import {autocompletion} from "@codemirror/autocomplete";
 
-// languageExtensions 객체의 키는 상위 컴포넌트에서 내려줄 language prop과 일치해야 합니다.
 const languageExtensions = {
-  Javascript: javascript(),
+  JavaScript: javascript(),
   "C++": cpp(),
   C: cpp(),
   Python: python(),
@@ -25,60 +24,22 @@ const disableAutocomplete = autocompletion({
 });
 
 export default function CodeEditor({
-                                     language,
-                                     templateCode,
-                                     onCodeChange: setCode,
-                                     C,
-                                     Javascript,
-                                     Java,
-                                     Python,
-                                     "C++": Cpp,
+                                     curLanguage = 'JavaScript',
+                                     curCode = '',
+                                     setCurCode
                                    }) {
   // templateCode와 현재 사용중인 언어의 CodeMirror extension 상태
-  const [languageExtension, setLanguageExtension] = useState(languageExtensions[language]);
+  const languageExtension = languageExtensions[curLanguage];
 
-  // language 혹은 템플릿 코드 props가 변경될 때마다 templateCode 업데이트
-  useEffect(() => {
-    if (setCode) {
-      switch (language) {
-        case "C":
-          setCode(C);
-          break;
-        case "C++":
-          setCode(Cpp);
-          break;
-        case "Python":
-          setCode(Python);
-          break;
-        case "Java":
-          setCode(Java);
-          break;
-        case "Javascript":
-        default:
-          setCode(Javascript);
-          break;
-      }
-    }
-
-  }, [language, C, Cpp, Python, Java, Javascript]);
-
-  // language prop이 바뀔 때마다 해당 언어에 맞는 CodeMirror extension 업데이트
-  useEffect(() => {
-    setLanguageExtension(languageExtensions[language]);
-  }, [language]);
-
-  // onChange 콜백은 CodeMirror에서 전달하는 값(코드 텍스트)을 받아 templateCode 상태를 업데이트합니다.
-  const handleChange = (value) => {
-    setCode(value);
+  const handleCodeChange = (value) => {
+    setCurCode(value);
   };
 
   return (
     <CodeMirror
       className="overflow-y-scroll flex-grow"
-      value={templateCode}
-      onChange={handleChange}
-      height="100%"
-      width="100%"
+      value={curCode}
+      onChange={handleCodeChange}
       editable={true}
       readOnly={false}
       indentWithTab={true}

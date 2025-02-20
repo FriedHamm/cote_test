@@ -1,3 +1,4 @@
+'use client'
 import { useState } from "react";
 
 function getButtonClass({ index, selected, selectedConsoleTab, testResult }) {

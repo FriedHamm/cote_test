@@ -8,7 +8,7 @@ export default function BreadCrumb({ problemName }) {
         {/* Home 아이콘 */}
         <li>
           <div>
-            <Link href="/" className="text-gray-400 hover:text-gray-500">
+            <Link href="/" className="text-gray-400 hover:text-gray-500" aria-label="Home">
               <HomeIcon aria-hidden="true" className="size-5 shrink-0" />
               <span className="sr-only">Home</span>
             </Link>
@@ -18,7 +18,7 @@ export default function BreadCrumb({ problemName }) {
         <li>
           <div className="flex items-center">
             <ChevronRightIcon aria-hidden="true" className="size-5 shrink-0 text-gray-400" />
-            <Link href="/problems" className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">
+            <Link href="/problems" className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700" aria-label="문제리스트로 이동">
               코딩테스트
             </Link>
           </div>
@@ -28,7 +28,7 @@ export default function BreadCrumb({ problemName }) {
           <li>
             <div className="flex items-center">
               <ChevronRightIcon aria-hidden="true" className="size-5 shrink-0 text-gray-400" />
-              <span className="ml-4 text-sm font-medium text-gray-500">
+              <span className="ml-4 text-sm font-medium text-gray-500" aria-label="current problem">
                 {problemName}
               </span>
             </div>
