@@ -34,17 +34,17 @@ export default function ProblemNav() {
   ];
 
   return (
-    <nav aria-label="problem navigation" className="bg-[#FBF9F4] flex justify-between md:justify-start xl:gap-6 gap-3 px-4 py-2 border-b-[#F7F7F7] border-b border-t-lg overflow-x-scroll shrink-0">
+    <nav aria-label="problem navigation" className="bg-[#FBF9F4] flex justify-start gap-6  px-4 py-2 border-b-[#F7F7F7] border-b border-t-lg overflow-x-scroll shrink-0">
       {navItems.map(({ tab, label, icon: Icon }) => (
         <button
           key={tab}
-          className={`font-semibold text-sm lg:text-base inline-flex gap-1 items-center whitespace-nowrap ${
+          className={`font-semibold text-sm inline-flex gap-1 items-center whitespace-nowrap ${
             curTab === tab ? "text-black" : "text-gray-500"
           }`}
           onClick={() => handleNavigation(tab)}
           aria-current={tab === curTab ? 'page' : undefined}
         >
-          <Icon className="lg:w-6 lg:h-6 w-4 h-4" aria-hidden={true}/>
+          <Icon className="w-6 h-6" aria-hidden={true}/>
           <span>{label}</span>
         </button>
       ))}

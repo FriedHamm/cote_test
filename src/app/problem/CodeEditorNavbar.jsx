@@ -9,10 +9,9 @@ const languages = ['JavaScript', 'C++', 'C', 'Python', 'Java'];
 function Tooltip({ children, targetRect }) {
   if (!targetRect) return null;
 
-  // 버튼 중앙 위쪽에 위치하도록 계산 (동적으로 값이 필요한 부분은 inline style로 처리)
   const style = {
-    left: targetRect.right,
-    top: targetRect.top - targetRect.height, // 버튼 위 8px 간격
+    left: targetRect.right + window.scrollX,
+    top: targetRect.top - targetRect.height + window.scrollY,
     transform: 'translateX(-100%)'
   };
 
