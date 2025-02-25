@@ -11,5 +11,5 @@ export const store = configureStore({
     alerts: alertReducer,
     // 다른 슬라이스들 ...
   },
-  devTools: process.env.NODE_ENV !== 'production'
+  // devTools: process.env.NODE_ENV !== 'production'
 });
