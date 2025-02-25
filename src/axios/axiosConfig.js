@@ -1,5 +1,8 @@
 import axios from 'axios';
-import {handleLogout} from "@/authHelper";
+import { store } from '@/store/store';
+import { logout } from "@/store/slices/authSlice";
+
+const logoutMessage = '로그아웃 되었습니다. 계속하시려면 다시 로그인해주세요.';
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
@@ -9,23 +12,26 @@ const api = axios.create({
 api.interceptors.response.use(
   response => response,
   async error => {
-    console.log('API 에러:', error);
     if (error?.response?.status === 401) {
-      const originalRequest = error.config; // Save the original request config
+      console.log(error)
+      const originalRequest = error.config;
       const errorMessage = error?.response?.data?.detail || '';
-      console.error(errorMessage);
       if (errorMessage === 'access token required.' && !originalRequest._retry) {
-        originalRequest._retry = true; // Prevent infinite loop
+        originalRequest._retry = true;
         try {
           await api.post('account/v1/auth/token/refreshment');
-          console.log('토큰 리프레시 요청이 성공했습니다.');
-          return api(originalRequest); // Retry the original request after token refreshment
+          return api(originalRequest);
         } catch (err) {
-          console.log('토큰 리프레시 요청에 실패했습니다.', err);
-          handleLogout();
+          const { logoutRequest } = store.getState().auth;
+          if (!logoutRequest) {
+            store.dispatch(logout(logoutMessage));
+          }
         }
       } else if (errorMessage === 'refresh token required.') {
-        handleLogout();
+        const { logoutRequest } = store.getState().auth;
+        if (!logoutRequest) {
+          store.dispatch(logout(logoutMessage));
+        }
       }
     }
     return Promise.reject(error);

@@ -11,9 +11,11 @@ import {logout} from "@/store/slices/authSlice";
 
 const navigation = [
   {name: '코딩테스트', href: '/problems'},
-  {name: '커뮤니티', href: '#'},
+  // {name: '커뮤니티', href: '#'},
   {name: '관리자', href: '#'}
 ]
+
+const logoutMessage = '로그아웃 되었습니다.'
 
 export default function Header() {
   const dispatch = useDispatch();
@@ -24,8 +26,7 @@ export default function Header() {
   const onLogout = async () => {
     try {
       const response = await api.post('account/v1/auth/token/revocation');
-      dispatch(logout());
-      alert('로그아웃 되었습니다.');
+      dispatch(logout(logoutMessage));
     } catch (error) {
       console.log(error);
     }

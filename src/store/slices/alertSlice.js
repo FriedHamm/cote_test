@@ -13,11 +13,12 @@ const alertSlice = createSlice({
   reducers: {
     // 새 alert를 추가
     addAlert: (state, action) => {
-      const { type, message } = action.payload;
+      const { type, message, link } = action.payload;
       state.alerts.push({
         id: nextAlertId++,
         type,          // 예: 'warning', 'error', 'info' 등
         message,       // alert에 표시할 메시지
+        link,          // 간혹 Alert에 링크를 포함하는 경우가 있을 거임.. undefined일 수 있음
         show: true,    // 기본적으로 alert는 보이는 상태
       });
     },

@@ -2,6 +2,7 @@
 import {removeAlert} from "@/store/slices/alertSlice";
 import {useDispatch, useSelector} from "react-redux";
 import WarningAlert from "@/components/alerts/WarningAlert";
+import InfoAlert from "@/components/alerts/InfoAlert";
 
 export default function AlertContainer() {
   const dispatch = useDispatch()
@@ -33,11 +34,11 @@ export default function AlertContainer() {
 
   return (
     <AlertComponent
-      key={currentAlert.id}
       id={currentAlert.id}  // id도 함께 전달
       show={currentAlert.show}
       message={currentAlert.message}
       onClose={handleClose}
+      link={currentAlert?.link}
     />
   )
 }

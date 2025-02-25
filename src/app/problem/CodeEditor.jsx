@@ -1,5 +1,5 @@
 'use client'
-import CodeMirror from "@uiw/react-codemirror";
+import CodeMirror, {EditorView} from "@uiw/react-codemirror";
 import {javascript} from "@codemirror/lang-javascript";
 import {cpp} from "@codemirror/lang-cpp";
 import {python} from "@codemirror/lang-python";
@@ -58,7 +58,7 @@ export default function CodeEditor({
         searchKeymap: true,
         historyKeymap: true,
       }}
-      extensions={[languageExtension, disableAutocomplete]}
+      extensions={[languageExtension, disableAutocomplete, EditorView.lineWrapping]}
       theme={solarizedLight}
     />
   );

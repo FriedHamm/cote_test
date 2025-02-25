@@ -37,7 +37,7 @@ export default function ProblemLayout({params, children}) {
 
 
   return (
-    <div className="bg-[#FFF0F0] h-screen pt-8">
+    <div className="bg-[#FFF0F0] min-h-screen overflow-y-scroll h-screen pt-8">
       <BreadCrumb problemName=""/>
       <ProblemContent>{ children }</ProblemContent>
     </div>

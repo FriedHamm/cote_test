@@ -35,8 +35,8 @@ export default function ProblemContent({ children }) {
       </div>
 
       {/*{여긴 모바일}*/}
-      <div className="block md:hidden bg-[#FFFAF0] mt-3">
-        <div className="border-b-gray-300 border-b-2">
+      <div className="block md:hidden bg-[#FFFAF0] mt-3 h-full">
+        <div className="border-b-gray-300 border-b-2 h-full overflow-y-scroll">
           <ProblemNav/>
           {children}
         </div>
@@ -44,7 +44,9 @@ export default function ProblemContent({ children }) {
           <CodeEditorNavbar language={language} onLanguageChange={handleLanguageChange}/>
           <CodeEditor/>
         </div>
-        <Console/>
+        <div className="bg-[#FFFAF0]">
+          <Console/>
+        </div>
       </div>
     </>
   )

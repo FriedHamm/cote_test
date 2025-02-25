@@ -1,26 +1,20 @@
 'use client'
 
-import {
-  CalendarIcon,
-  ChartPieIcon,
-  DocumentDuplicateIcon,
-  FolderIcon,
-  HomeIcon,
-  UsersIcon,
-} from '@heroicons/react/24/outline'
 import MobileNav from "@/app/user/MobileNav";
 import {useDispatch, useSelector} from "react-redux";
 import { useRouter } from "next/navigation";
 import {addAlert} from "@/store/slices/alertSlice";
 import {useEffect} from "react";
 import Link from "next/link";
+import Spinner from "@/components/Spinner";
+import AuthGuard from "@/components/AuthGuard";
 
 const userInfo = [
   {id: 1, name: '계정 관리', href: '/user/profile', current: false},
 ]
 
 const codingtest = [
-  {id: 1, name: '계정 관리', href: '/user/profile', current: false},
+  {id: 1, name: '제출 내역', href: '/user/coding-test/history', current: false},
 ]
 
 function classNames(...classes) {
@@ -28,26 +22,6 @@ function classNames(...classes) {
 }
 
 export default function UserLayout({children}) {
-  const { isLoggedIn, status } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
-  const router = useRouter();
-
-  useEffect(() => {
-    // 로그인 요청이 완료된 후(isLoggedIn가 false일 때)만 리다이렉트
-    if (status !== 'loading' && !isLoggedIn) {
-      router.push('/account/sign-in');
-      dispatch(addAlert({ type: 'warning', message: '로그인이 필요합니다.' }));
-    }
-  }, [isLoggedIn, status, router, dispatch]);
-
-  // 로그인 여부 확인이 진행중이면 로딩 컴포넌트나 null을 반환
-  if (status === 'loading' && status === 'idle') {
-    return null; // 또는 <Spinner /> 같은 로딩 컴포넌트를 보여줄 수 있음
-  }
-
-  if (!isLoggedIn) {
-    return null;
-  }
 
   return (
     <div>
@@ -106,7 +80,9 @@ export default function UserLayout({children}) {
         </div>
 
         <main className="lg:grow">
-          {children}
+          <AuthGuard>
+            {children}
+          </AuthGuard>
         </main>
       </div>
     </div>

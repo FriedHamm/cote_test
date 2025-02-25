@@ -1,4 +1,3 @@
-'use client'
 import Link from "next/link";
 
 export default function HeroSection() {
@@ -32,11 +31,11 @@ export default function HeroSection() {
                 href="/problems/1"
                 className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                문제 풀러가기
+                문제 풀러가기 <span aria-hidden="true">→</span>
               </Link>
-              <Link href="#" className="text-sm/6 font-semibold text-gray-900">
-                커뮤니티 가기 <span aria-hidden="true">→</span>
-              </Link>
+              {/*<Link href="/problems/1" className="text-sm/6 font-semibold text-gray-900">*/}
+              {/*  문제 풀러가기 <span aria-hidden="true">→</span>*/}
+              {/*</Link>*/}
             </div>
           </div>
         </div>

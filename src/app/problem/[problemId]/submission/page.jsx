@@ -1,5 +1,9 @@
+import SubmissionHistory from "@/components/SubmissionHistory";
+
 export default function Submission(props) {
   return (
-    <div></div>
+    <div className="px-4 h-full">
+      <SubmissionHistory/>
+    </div>
   )
 }

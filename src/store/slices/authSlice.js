@@ -35,20 +35,28 @@ const initialState = {
   role: '', // 'U': 일반 사용자 | 'A': 관리자 | 'S': 슈퍼유저
   email: '',
   status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
-  error: null,
+  error: '',
+  logoutRequest: false,
+  logoutMessage: ''
 };
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    logout: (state) => {
+    logout: (state, action) => {
       state.isLoggedIn = false;
       state.role = '';
       state.email = '';
       state.status = 'idle';
       state.error = null;
+      state.logoutRequest = true;
+      state.logoutMessage = action.payload;
     },
+    clearLogoutRequest: (state) => {
+      state.logoutRequest = false;
+      state.logoutMessage = '';
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -60,6 +68,7 @@ const authSlice = createSlice({
         state.isLoggedIn = action.payload.isLoggedIn;
         state.role = action.payload.role;
         state.email = action.payload.email;
+        state.logoutRequest = false;
       })
       .addCase(checkAuth.rejected, (state, action) => {
         state.status = 'failed';
@@ -68,5 +77,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, clearLogoutRequest } = authSlice.actions;
 export default authSlice.reducer;
