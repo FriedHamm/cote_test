@@ -13,6 +13,7 @@ export default function useAuth() {
     if (status !== 'loading') {
       if (!isLoggedIn) {
         router.push('/account/sign-in');
+        console.log('실행됨')
         dispatch(addAlert({ type: 'warning', message: '로그인이 필요합니다.' }));
       } else {
         setAuthChecked(true);
