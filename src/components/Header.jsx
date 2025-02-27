@@ -10,7 +10,7 @@ import api from "@/axios/axiosConfig";
 import {logout} from "@/store/slices/authSlice";
 
 const navigation = [
-  {name: '코딩테스트', href: '/problems'},
+  {name: '코딩테스트', href: '/problems/1'},
   // {name: '커뮤니티', href: '#'},
   {name: '관리자', href: '#'}
 ]
@@ -25,12 +25,17 @@ export default function Header() {
 
   const onLogout = async () => {
     try {
-      const response = await api.post('account/v1/auth/token/revocation');
-      dispatch(logout(logoutMessage));
+      await api.post(
+        'account/v1/auth/token/revocation',
+        {},
+        { headers: { 'X-User-Logout': 'true' } }
+      );
     } catch (error) {
-      console.log(error);
+      console.error(error);
+    } finally {
+      dispatch(logout({ logoutRequest: true, logoutMessage }));
     }
-  }
+  };
 
   if (pathname === 'problem') return null;
 

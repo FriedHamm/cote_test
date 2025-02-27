@@ -1,47 +1,92 @@
 'use client';
-import { useForm } from "react-hook-form";
+import {useForm} from "react-hook-form";
 import api from "@/axios/axiosConfig";
-import { yupResolver } from "@hookform/resolvers/yup";
+import {yupResolver} from "@hookform/resolvers/yup";
 import SocialLoginForm from "@/app/account/SocialLoginForm";
 import Link from "next/link";
 import {useRef} from "react";
 import loginScheme from "@/yup/loginScheme";
 import {useRouter} from "next/navigation";
-import {useDispatch} from "react-redux";
-import {checkAuth} from "@/store/slices/authSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {checkAuth, logout} from "@/store/slices/authSlice";
+import {addAlert} from "@/store/slices/alertSlice";
 
 export default function LoginPage() {
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const {register, handleSubmit, formState: {errors}} = useForm({
     resolver: yupResolver(loginScheme)
   });
   const formRef = useRef(null);
   const router = useRouter();
   const dispatch = useDispatch();
+  const previousUrl = useSelector(state => state.previousUrl.previousUrl);
 
   const onSubmit = async (data) => {
     try {
-      const response = await api.post('account/v1/auth/token', data);
+      const response = await api.post("account/v1/auth/token", data);
       console.log(response);
-      dispatch(checkAuth());
-      router.push('/')
+      await dispatch(checkAuth(true)).unwrap();
+      router.push("/");
     } catch (error) {
       if (error.response) {
         const status = error.response.status;
-        // status code에 따른 alert 메시지 처리
+        const message = error.response.data?.detail;
+        // 430은 3개 api 모두에서 발생함 (이게 맞나 싶긴 함.. 뭐 전부 다 형식이 다르다는 식으로만 표시되어있음)
         if (status === 430) {
-          alert("올바른 요청이 아닙니다. 다시 시도해주세요.");
+          dispatch(
+            addAlert({
+              type: "warning",
+              message: "올바른 요청이 아닙니다. 다시 시도해주세요.",
+            })
+          );
         } else if (status === 401) {
-          alert("잘못된 이메일 또는 비밀번호입니다.");
+          // 사실 이게 말이 되는 상황인가 싶기는 한데.. 뭐 존재는 한다고 함
+          if (message === 'access token expired.') {
+            dispatch(
+              addAlert({
+                type: "warning",
+                message: "로그아웃 되었습니다. 지속적으로 발생 시 고객센터에 문의주시기 바랍니다.",
+              }));
+            dispatch(logout());
+            router.push('/');
+          }
+          else {
+            dispatch(
+              addAlert({
+                type: "warning",
+                message: "잘못된 이메일 또는 비밀번호입니다.",
+              })
+            );
+          }
         } else if (status === 404) {
-          alert("해당 사용자가 존재하지 않습니다.");
+          dispatch(
+            addAlert({
+              type: "warning",
+              message: "해당 사용자가 존재하지 않습니다.",
+            })
+          );
         } else if (status === 500) {
-          alert("요청에 실패하였습니다. 다시 시도해주세요.");
+          dispatch(
+            addAlert({
+              type: "warning",
+              message: "서버에 문제가 발생했습니다. 잠시 후 다시 시도해 주시거나, 문제가 지속된다면 고객센터에 문의해 주세요.",
+            })
+          );
         } else {
-          alert(`알 수 없는 오류가 발생하였습니다. (Status: ${status})`);
+          // 403 요구 권한보다 낮은 권한의 유저가 접근하는 경우가 발생?.. 할 수는 없겠지?.. else는 그 경우 혹은 에러 명세서에 명시를 안한 것밖에 없음
+          dispatch(
+            addAlert({
+              type: "warning",
+              message: `알 수 없는 오류가 발생하였습니다. (Status: ${status}) 네트워크 연결 확인 후 해결이 안될 시 고객센터에 문의 바랍니다.`,
+            })
+          );
         }
       } else {
-        // error.response가 없는 경우 네트워크 에러일 가능성이 있습니다.
-        alert("네트워크 오류가 발생하였습니다. 다시 시도해주세요.");
+        dispatch(
+          addAlert({
+            type: "warning",
+            message: `알 수 없는 오류가 발생하였습니다. (Status: ${status}) 네트워크 연결 확인 후 해결이 안될 시 고객센터에 문의 바랍니다.`,
+          })
+        );
       }
     }
   };
@@ -114,7 +159,7 @@ export default function LoginPage() {
       <div>
         <div className="relative mt-10">
           <div aria-hidden="true" className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-200" />
+            <div className="w-full border-t border-gray-200"/>
           </div>
           <div className="relative flex justify-center text-sm font-medium">
             <span className="bg-white px-6 text-gray-900">소셜 로그인</span>
@@ -123,7 +168,7 @@ export default function LoginPage() {
 
         <div className="mt-6">
           <button className="block mx-auto" onClick={handleKakaoLoginClick}>
-            <img src="/kakao_login.png" alt="카카오 로그인" />
+            <img src="/kakao_login.png" alt="카카오 로그인"/>
           </button>
         </div>
       </div>
@@ -134,7 +179,7 @@ export default function LoginPage() {
           지금 바로 회원가입을 해보세요!
         </Link>
       </p>
-      <SocialLoginForm ref={formRef}/>
+      <SocialLoginForm ref={formRef} previousUrl={previousUrl}/>
     </>
   );
 }

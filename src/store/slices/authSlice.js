@@ -4,7 +4,7 @@ import api from "@/axios/axiosConfig";
 // 백엔드 API를 호출해 로그인 상태를 확인하는 thunk
 export const checkAuth = createAsyncThunk(
   'auth/checkAuth',
-  async (_, { rejectWithValue }) => {
+  async (loginRequest = false, { rejectWithValue }) => {
     try {
       const response = await api.get('/account/v1/user/validation');
       if (response.data.status === true) {
@@ -14,6 +14,7 @@ export const checkAuth = createAsyncThunk(
           isLoggedIn: true,
           role: userResponse.data.userrole,
           email: userResponse.data.email,
+          loginRequest
         };
       } else {
         // 로그인이 되어있지 않으면 기본값 반환
@@ -32,6 +33,7 @@ export const checkAuth = createAsyncThunk(
 
 const initialState = {
   isLoggedIn: false,
+  loginRequest: false, // 이건 일반 로그인 시 사용됨. 초기 로드 시에는 사용하지 않고 일반 로그인 시에는 checkAuth에 true 값을 넘길 것..
   role: '', // 'U': 일반 사용자 | 'A': 관리자 | 'S': 슈퍼유저
   email: '',
   status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
@@ -44,18 +46,22 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    logout: (state, action) => {
+    logout: (state, { payload: { logoutRequest = false, logoutMessage = '' } = {} }) => {
       state.isLoggedIn = false;
       state.role = '';
       state.email = '';
-      state.status = 'idle';
-      state.error = null;
-      state.logoutRequest = true;
-      state.logoutMessage = action.payload;
+      state.status = 'succeeded';
+      state.error = '';
+      state.logoutRequest = logoutRequest;
+      state.logoutMessage = logoutMessage;
+      state.loginRequest = false;
     },
     clearLogoutRequest: (state) => {
       state.logoutRequest = false;
       state.logoutMessage = '';
+    },
+    clearLoginRequest: (state) => {
+      state.loginRequest = false;
     }
   },
   extraReducers: (builder) => {
@@ -69,6 +75,7 @@ const authSlice = createSlice({
         state.role = action.payload.role;
         state.email = action.payload.email;
         state.logoutRequest = false;
+        state.loginRequest = action.payload.loginRequest;
       })
       .addCase(checkAuth.rejected, (state, action) => {
         state.status = 'failed';
@@ -77,5 +84,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, clearLogoutRequest } = authSlice.actions;
+export const { logout, clearLogoutRequest, clearLoginRequest } = authSlice.actions;
 export default authSlice.reducer;

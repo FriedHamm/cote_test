@@ -3,19 +3,24 @@ import { useForm } from "react-hook-form";
 import api from "@/axios/axiosConfig";
 import { yupResolver } from "@hookform/resolvers/yup";
 import signupScheme from "@/yup/signupScheme";
+import {useRouter} from "next/navigation";
+import {useDispatch} from "react-redux";
+import {addAlert} from "@/store/slices/alertSlice";
 
 export default function LoginPage() {
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(signupScheme),
     mode: "onChange",
   });
+  const router = useRouter();
+  const dispatch = useDispatch();
 
   const onSubmit = async (data) => {
     try {
       const response = await api.post("/account/v1/auth/token/registration", data);
       if (response.status === 201) {
-        alert("회원가입에 성공하셨습니다.");
-        window.location.href = "https://cote.nossi.dev";
+        dispatch(addAlert({type: 'info', message: '회원가입에 성공하였습니다.'}));
+        router.push('/')
       }
     } catch (error) {
       if (error.response) {
@@ -94,6 +99,26 @@ export default function LoginPage() {
           </div>
         </div>
 
+        <fieldset className="flex flex-col gap-3 text-sm">
+          <legend className="sr-only">회원가입 동의창</legend>
+          <label htmlFor="agree-all">
+            <input id="agree-all" type="checkbox"/> <span className="text-gray-400">전체 동의</span>
+          </label>
+          <hr/>
+          <label htmlFor="privacy-agree">
+            <input id="privacy-agree" type="checkbox"/>
+            {' '}
+            <a href="https://cote.nossi.dev/privacy" target="_blank" rel="noreferrer noopener" className="underline">개인정보 처리방침</a> 동의
+          </label>
+          <label htmlFor="tos-agree">
+            <input id="tos-agree" type="checkbox"/>
+            {' '}
+              <a href="https://cote.nossi.dev/tos" target="_blank" rel="noreferrer noopener" className="underline">
+                서비스 이용약관
+              </a> 동의
+          </label>
+        </fieldset>
+
         <div>
           <button
             type="submit"
@@ -107,7 +132,7 @@ export default function LoginPage() {
       <div>
         <div className="relative mt-10">
           <div aria-hidden="true" className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-200" />
+            <div className="w-full border-t border-gray-200"/>
           </div>
           <div className="relative flex justify-center text-sm font-medium">
             <span className="bg-white px-6 text-gray-900">소셜 회원가입</span>

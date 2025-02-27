@@ -10,14 +10,15 @@ export default function useAuth() {
   const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
-    if (status !== 'loading') {
-      if (!isLoggedIn) {
-        router.push('/account/sign-in');
-        console.log('실행됨')
-        dispatch(addAlert({ type: 'warning', message: '로그인이 필요합니다.' }));
-      } else {
-        setAuthChecked(true);
-      }
+    // 아직 인증 체크가 시작되지 않았거나 진행 중일 경우에는 아무것도 하지 않음
+    if (status === 'idle' || status === 'loading') return;
+
+    // 인증 체크가 완료된 후 처리
+    if (!isLoggedIn) {
+      router.push('/account/sign-in');
+      dispatch(addAlert({ type: 'warning', message: '로그인이 필요합니다.' }));
+    } else {
+      setAuthChecked(true);
     }
   }, [isLoggedIn, status, router, dispatch]);
 
