@@ -1,19 +1,22 @@
 'use client'
 import Pagination from "rc-pagination";
 import {ChevronLeftIcon, ChevronRightIcon} from "@heroicons/react/20/solid";
+import {useRouter} from "next/navigation";
 
-export default function PaginationWrapper({current, total, onPageChange: handlePageChange}) {
+export default function PaginationWrapper({curPage, totalCount}) {
+  const router = useRouter();
 
-  // 페이지가 변경될 때 호출되는 onChange 핸들러
-  console.log(current);
+  const handlePageChange = (page) => {
+    router.push(`/problems/${page}`);
+  }
 
   return (
     <nav aria-label="Pagination" className="isolate mx-auto">
       <Pagination
         className="flex -space-x-px rounded-md shadow-sm"
-        current={current}
+        current={curPage}
         pageSize={10}
-        total={989}
+        total={totalCount}
         onChange={handlePageChange}
         itemRender={(page, type, element) => {
           if (type === 'page') {
@@ -27,10 +30,10 @@ export default function PaginationWrapper({current, total, onPageChange: handleP
             const inactiveClass =
               "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0";
 
-            const buttonClass = current === page ? `${baseClass} ${activeClass}` : `${baseClass} ${inactiveClass}`;
+            const buttonClass = curPage === page ? `${baseClass} ${activeClass}` : `${baseClass} ${inactiveClass}`;
 
             return (
-              <button aria-current={current === page ? 'page' : undefined} className={buttonClass}>
+              <button aria-current={curPage === page ? 'page' : undefined} className={buttonClass}>
                 {page}
               </button>
             );

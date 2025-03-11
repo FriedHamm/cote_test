@@ -22,20 +22,6 @@ const alertSlice = createSlice({
         show: true,    // 기본적으로 alert는 보이는 상태
       });
     },
-    // 특정 alert의 show 상태를 true로 전환. 이건 어떤 경우에 사용하게 될지는 모름
-    showAlert: (state, action) => {
-      const alert = state.alerts.find(alert => alert.id === action.payload);
-      if (alert) {
-        alert.show = true;
-      }
-    },
-    // 특정 alert의 show 상태를 false로 전환. 닫기 버튼이 존재할 경우에 사용할 것
-    hideAlert: (state, action) => {
-      const alert = state.alerts.find(alert => alert.id === action.payload);
-      if (alert) {
-        alert.show = false;
-      }
-    },
     // 특정 alert를 상태에서 제거
     removeAlert: (state, action) => {
       state.alerts = state.alerts.filter(alert => alert.id !== action.payload);
@@ -43,5 +29,5 @@ const alertSlice = createSlice({
   },
 });
 
-export const { addAlert, showAlert, hideAlert, removeAlert } = alertSlice.actions;
+export const { addAlert, removeAlert } = alertSlice.actions;
 export default alertSlice.reducer;

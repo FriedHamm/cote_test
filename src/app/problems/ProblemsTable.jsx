@@ -1,31 +1,10 @@
 import Link from "next/link";
 
-const problemList = [
-  {status: '풀이 완료', title: 'Two Sum', level: 'Lv.1', accuracy: '50%'},
-  {status: '풀이 완료', title: 'Two Sum', level: 'Lv.1', accuracy: '50%'},
-  {status: '풀이 완료', title: 'Two Sum', level: 'Lv.1', accuracy: '50%'},
-  {status: '풀이 완료', title: 'Two Sum', level: 'Lv.1', accuracy: '50%'},
-  {status: '풀이 완료', title: 'Two Sum', level: 'Lv.1', accuracy: '50%'},
-  {status: '풀이 완료', title: 'Two Sum', level: 'Lv.1', accuracy: '50%'},
-  {status: '풀이 완료', title: 'Two Sum', level: 'Lv.1', accuracy: '50%'},
-  {status: '풀이 완료', title: 'Two Sum', level: 'Lv.1', accuracy: '50%'},
-  {status: '풀이 완료', title: 'Two Sum', level: 'Lv.1', accuracy: '50%'},
-  {status: '풀이 완료', title: 'Two Sum', level: 'Lv.1', accuracy: '50%'},
-  {status: '풀이 완료', title: 'Two Sum', level: 'Lv.1', accuracy: '50%'},
-  {status: '풀이 완료', title: 'Two Sum', level: 'Lv.1', accuracy: '50%'},
-  {status: '풀이 완료', title: 'Two Sum', level: 'Lv.1', accuracy: '50%'},
-  {status: '풀이 완료', title: 'Two Sum', level: 'Lv.1', accuracy: '50%'},
-  {status: '풀이 완료', title: 'Two Sum', level: 'Lv.1', accuracy: '50%'},
-
-
-  // More people...
-]
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function ProblemsTable({ problems }) {
+export default function ProblemsTable({ problemList }) {
 
   return (
     <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex-grow">
@@ -50,9 +29,9 @@ export default function ProblemsTable({ problems }) {
           <div className="inline-block min-w-full py-2 align-middle">
             <table className="min-w-full border-separate border-spacing-0">
               <colgroup>
-                <col className="w-[30%] sm:w-[20%]"/>
+                {/*<col className="w-[30%] sm:w-[20%]"/>*/}
                 {/* 풀이 상태 */}
-                <col className="w-[30%] sm:w-[50%]"/>
+                <col className="w-[60%] sm:w-[70%]"/>
                 {/* 제목 */}
                 <col className="w-[20%] sm:w-[15%]"/>
                 {/* 난이도 */}
@@ -61,12 +40,12 @@ export default function ProblemsTable({ problems }) {
               </colgroup>
               <thead>
                 <tr>
-                  <th
-                    scope="col"
-                    className="sticky top-0 z-10 border-b border-gray-300 bg-white/75 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8"
-                  >
-                    풀이 상태
-                  </th>
+                  {/*<th*/}
+                  {/*  scope="col"*/}
+                  {/*  className="sticky top-0 z-10 border-b border-gray-300 bg-white/75 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8"*/}
+                  {/*>*/}
+                  {/*  풀이 상태*/}
+                  {/*</th>*/}
                   <th
                     scope="col"
                     className="sticky top-0 z-10 border-b border-gray-300 bg-white/75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:table-cell"
@@ -91,21 +70,21 @@ export default function ProblemsTable({ problems }) {
               <tbody>
                 {problemList.map((problem, problemIdx) => (
                   <tr key={problem.title}>
-                    <td
-                      className={classNames(
-                        problemIdx !== problemList.length - 1 ? 'border-b border-gray-200' : '',
-                        'whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8',
-                      )}
-                    >
-                      {problem.status}
-                    </td>
+                    {/*<td*/}
+                    {/*  className={classNames(*/}
+                    {/*    problemIdx !== problemList.length - 1 ? 'border-b border-gray-200' : '',*/}
+                    {/*    'whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8',*/}
+                    {/*  )}*/}
+                    {/*>*/}
+                    {/*  {problem.status}*/}
+                    {/*</td>*/}
                     <td
                       className={classNames(
                         problemIdx !== problemList.length - 1 ? 'border-b border-gray-200' : '',
                         'whitespace-break-spaces px-3 py-4 text-sm text-gray-500 sm:table-cell',
                       )}
                     >
-                      <Link href="#">
+                      <Link href={`/problem/${problem.id}/description`}>
                         {problem.title}
                       </Link>
                     </td>
@@ -123,7 +102,7 @@ export default function ProblemsTable({ problems }) {
                         'whitespace-nowrap px-3 py-4 text-sm text-gray-500',
                       )}
                     >
-                      {problem.accuracy}
+                      {Math.trunc(problem.attempt_num / problem.solve_num) * 100 || 0}
                     </td>
 
                   </tr>

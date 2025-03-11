@@ -1,5 +1,8 @@
 'use client'
-import {useState} from "react";
+import {useContext, useRef, useState} from "react";
+import {ProblemContext} from "@/app/problem/ProblemContent";
+import {useSelector} from "react-redux";
+import {useRouter} from "next/navigation";
 
 const testTestCases = [
   {
@@ -16,31 +19,34 @@ const testTestCases = [
   }
 ]
 
-export default function Console({testCases, onRunClick, onSubmitClick, testResult}) {
+// 런 테케
+// 섭밋 테케
+// 각 클릭시 핸들러
+// 테스트 결과는 상위에서 받아야 할듯?..
+
+export default function Console({testCases, testResult}) {
   const [selectedTestCase, setSelectedTestCase] = useState(0); // 선택된 테스트 케이스
   const [selectedTestResult, setSelectedTestResult] = useState(0); // 선택된 테스트 결과 케이스
   const [selectedConsoleTab, setSelectedConsoleTab] = useState(0); // 선택된 탭
   const [isRunLoading, setIsRunLoading] = useState(false); // 실행하기를 누르고 응답을 받기 전까지는 true 그렇지 않으면 false
   const [isSubmitLoading, setIsSubmitLoading] = useState(false); // 제출하기용
+  const {onRunClick, onSubmitClick} = useContext(ProblemContext);
 
   const curSelectedTestCase = selectedConsoleTab === 0 ? selectedTestCase : selectedTestResult;
 
   const handleRunClick = async () => {
     setIsRunLoading(true);
-    // onRunClick();
-    setTimeout(() => {
-      setIsRunLoading(false);
-      setSelectedConsoleTab(1);
-      setSelectedTestResult(0);
-    }, 2000); // 2초 후에 false로 설정
+
+    await onRunClick();
+    setIsRunLoading(false);
+    setSelectedConsoleTab(1);
+    setSelectedTestResult(0);
   }
 
   const handleSubmitClick = async () => {
     setIsSubmitLoading(true);
-    // onSubmitClick();
-    setTimeout(() => {
-      setIsSubmitLoading(false);
-    }, 2000)
+    await onSubmitClick();
+    setIsSubmitLoading(false);
   }
 
   const handleSelectedTestCaseChange = (selectedTestCase) => {
@@ -49,13 +55,15 @@ export default function Console({testCases, onRunClick, onSubmitClick, testResul
   }
 
 
-
   return (
     <div className="h-full p-4 flex flex-col overflow-y-scroll" aria-label="console">
-      <ConsoleNav selectedConsoleTab={selectedConsoleTab} setSelectedConsoleTab={setSelectedConsoleTab} isRunLoading={isRunLoading}/>
-      <TestCaseViewer selectedConsoleTab={selectedConsoleTab} selectedTestCase={curSelectedTestCase} onSelectedTestCaseChange={handleSelectedTestCaseChange}
-      isRunLoading={isRunLoading} />
-      <RunSubmitButtonContainer isRunLoading={isRunLoading} isSubmitLoading={isSubmitLoading} onRunClick={handleRunClick} onSubmitClick={handleSubmitClick} />
+      <ConsoleNav selectedConsoleTab={selectedConsoleTab} setSelectedConsoleTab={setSelectedConsoleTab}
+                  isRunLoading={isRunLoading}/>
+      <TestCaseViewer selectedConsoleTab={selectedConsoleTab} selectedTestCase={curSelectedTestCase}
+                      onSelectedTestCaseChange={handleSelectedTestCaseChange}
+                      isRunLoading={isRunLoading}/>
+      <RunSubmitButtonContainer isRunLoading={isRunLoading} isSubmitLoading={isSubmitLoading}
+                                onRunClick={handleRunClick} onSubmitClick={handleSubmitClick}/>
     </div>
   );
 }
@@ -63,7 +71,8 @@ export default function Console({testCases, onRunClick, onSubmitClick, testResul
 // 여기는 isSubmitLoaindg이 필요 없음
 function ConsoleNav({selectedConsoleTab, setSelectedConsoleTab, isRunLoading}) {
   return (
-    <div className="overflow-x-scroll shrink-0 -mx-4 -mt-4 py-2 px-4 flex gap-4 items-center bg-[#FBF9F4]" aria-label="console nav">
+    <div className="overflow-x-scroll shrink-0 -mx-4 -mt-4 py-2 px-4 flex gap-4 items-center bg-[#FBF9F4]"
+         aria-label="console nav">
       <button
         className={`${selectedConsoleTab !== 0 && "opacity-55"} flex items-center gap-1 text-sm shrink-0`}
         onClick={() => setSelectedConsoleTab(0)}
@@ -82,30 +91,49 @@ function ConsoleNav({selectedConsoleTab, setSelectedConsoleTab, isRunLoading}) {
   );
 }
 
-function RunSubmitButtonContainer({onRunClick: handleRunClick, onSubmitClick: handleSubmitClick, isRunLoading, isSubmitLoading}) {
+function RunSubmitButtonContainer({
+                                    onRunClick: handleRunClick,
+                                    onSubmitClick: handleSubmitClick,
+                                    isRunLoading,
+                                    isSubmitLoading
+                                  }) {
+  const { isLoggedIn } = useSelector(state => state.auth);
+  const router = useRouter();
+
+  // 로그인 여부에 따른 onClick 핸들러 결정
+  const runButtonClick = !isLoggedIn
+    ? () => router.push('/account/sign-in')
+    : handleRunClick;
+
+  const submitButtonClick = !isLoggedIn
+    ? () => router.push('/account/sign-in')
+    : handleSubmitClick;
+
   return (
     <div className="border-t border-t-gray-300 shrink-0 -mb-4 -mx-4 py-2 px-4 flex justify-end gap-4"
          aria-label="Run and Submit Button Container">
       <button
-        aria-label="Run Button"
+        aria-label={isLoggedIn ? "Run Button" : "Login Button"}
         type="button"
-        onClick={handleRunClick}
+        onClick={runButtonClick}
         disabled={isRunLoading || isSubmitLoading}
         className="disabled:cursor-not-allowed flex gap-1 items-center rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
       >
-        {(isRunLoading || isSubmitLoading) && <Loading/>}실행하기
+        {(isRunLoading || isSubmitLoading) && <Loading />}
+        {isLoggedIn ? "실행하기" : "로그인"}
       </button>
       <button
-        aria-label="Submit Button"
+        aria-label={isLoggedIn ? "Submit Button" : "Sign In Button"}
         type="button"
         disabled={isRunLoading || isSubmitLoading}
-        onClick={handleSubmitClick}
+        onClick={submitButtonClick}
         className="disabled:cursor-not-allowed flex gap-1 items-center rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
       >
-        {(isRunLoading || isSubmitLoading) && <Loading/>}제출하기
+        {(isRunLoading || isSubmitLoading) && <Loading />}
+        {isLoggedIn ? "제출하기" : "하러가기"}
       </button>
     </div>
-  )
+  );
 }
 
 // 여기는 로딩 중이면 pulse로 바꾸기
@@ -116,39 +144,68 @@ function RunSubmitButtonContainer({onRunClick: handleRunClick, onSubmitClick: ha
 // 여기서 버튼을 누를텐데
 // 상위에서 현재 탭이 무엇인지 판단해서 스위칭을 해줘야 함
 
-function TestCaseViewer({testCases = testTestCases, testResult, isRunLoading, selectedConsoleTab, selectedTestCase, onSelectedTestCaseChange: handleSelectedTestCaseChange}) {
+function TestCaseViewer({
+                          testCases = testTestCases,
+                          testResult,
+                          isRunLoading,
+                          selectedConsoleTab,
+                          selectedTestCase,
+                          onSelectedTestCaseChange: handleSelectedTestCaseChange
+                        }) {
+  const { runTestCase } = useContext(ProblemContext);
+  console.log(runTestCase);
+  const convertedRunTestCase = useRef(
+    Object.entries(runTestCase).map(
+      ([id, {input, output}]) => {
+        return {
+          id, // id는 원래 객체의 key입니다.
+          input: Object.entries(input).map(([key, value]) => ({key, value})),
+          output
+        };
+      }
+    ));
+
 
   return (
-    <div aria-label="Test Case Viewer" className={`flex-grow overflow-scroll py-2 ${isRunLoading && 'animate-pulse'}`}>
-      <div className="flex gap-2 px-3">
-        {testCases.map((_, index) => (
-
-          <button
-            key={index}
-            type="button"
-            onClick={() => handleSelectedTestCaseChange(index)}
-            className={`shrink-0 rounded-md  px-3 py-2 text-sm font-semibold text-indigo-600 ${selectedTestCase === index ? 'bg-indigo-50 shadow-sm' : undefined}  hover:bg-indigo-100`}
-          >
-            테스트케이스{index+1}
-          </button>
-        ))}
-      </div>
-      <div>
-        {testCases.map}
-      </div>
+    <div aria-label="Test Case Viewer" className={`grow overflow-scroll py-2 ${isRunLoading && 'animate-pulse'}`}>
+      {!testResult && selectedConsoleTab === 1 ? // 아직 run 안눌렀는데 결과 먼저 보려고 하는 경우
+        <div className="my-auto text-center text-gray-500">코드 실행을 먼저 해주세요.</div>
+        :
+        <>
+          <div className="flex gap-2 px-3">
+            {convertedRunTestCase.current.map((_, index) => (
+              <button
+                key={index}
+                type="button"
+                onClick={() => handleSelectedTestCaseChange(index)}
+                className={`shrink-0 rounded-md  px-3 py-2 text-sm font-semibold text-indigo-600 ${selectedTestCase === index ? 'bg-indigo-50 shadow-sm' : undefined}  hover:bg-indigo-100`}
+              >
+                테스트케이스{index + 1}
+              </button>
+            ))}
+          </div>
+          <div className="px-3 mt-3">
+            {convertedRunTestCase.current[selectedTestCase].input.map((input, index) => (
+              <div className='mt-2' key={index}>
+                <h4 className="text-sm text-gray-400">{input.key}</h4>
+                <p
+                  className="bg-gray-400 py-2 px-2 rounded-lg">{typeof input.value === 'object' ? JSON.stringify(input.value) : input.value}</p>
+              </div>
+            ))}
+          </div>
+        </>
+      }
     </div>
   )
 }
 
 function Loading() {
   return (
-
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"
          className="size-4 animate-spin">
       <path strokeLinecap="round" strokeLinejoin="round"
             d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"/>
     </svg>
-
   )
 }
 

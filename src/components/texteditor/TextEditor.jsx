@@ -33,6 +33,7 @@ import Subscript from "@tiptap/extension-subscript";
 import Superscript from "@tiptap/extension-superscript";
 import {Heading} from "@tiptap/extension-heading";
 import {Placeholder} from "@tiptap/extension-placeholder";
+import {useEffect, useRef} from "react";
 
 const baseClasses = 'p-2 rounded';
 const activeClasses = 'bg-purple-500 hover:bg-purple-600';
@@ -78,7 +79,8 @@ Heading.configure({
   levels: [1, 2, 3]
 })
 
-const TextEditor = ({ className, placeholder, onChange: handleChange }) => {
+// errors는 react-hook-form에서만 사용되는 것임 일단은.. 포커스 용도로 쓰는 것. 그래서 보통은 undefined임
+const TextEditor = ({ className, placeholder, initValue, value, onChange: handleChange, error }) => {
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -106,14 +108,25 @@ const TextEditor = ({ className, placeholder, onChange: handleChange }) => {
     ],
     editorProps: {
       attributes: {
-        class: `prose whitespace-pre-wrap p-4 ${className}`,
+        class: `prose ${className}`,
       }
     },
-    content: '',
+    content: initValue || '',
     onUpdate: ({ editor }) => {
       handleChange(editor.getHTML());
     }
   })
+
+  useEffect(() => {
+    if (editor){
+      handleChange(initValue);
+      editor?.commands?.setContent(initValue)
+    }
+  }, [editor, initValue])
+
+  useEffect(() => {
+    if (error?.message) editor?.commands?.focus();
+  }, [error, editor])
 
   if (!editor) {
     return null;

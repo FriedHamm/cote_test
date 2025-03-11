@@ -4,7 +4,7 @@ import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headless
 import { ChevronUpDownIcon } from '@heroicons/react/16/solid';
 import { CheckIcon } from '@heroicons/react/20/solid';
 
-const languages = ['JavaScript', 'C++', 'C', 'Python', 'Java'];
+// const languages = ['JavaScript', 'C++', 'C', 'Python', 'Java'];
 
 function Tooltip({ children, targetRect }) {
   if (!targetRect) return null;
@@ -23,7 +23,7 @@ function Tooltip({ children, targetRect }) {
   );
 }
 
-export default function CodeEditorNavbar({ language = 'JavaScript', onLanguageChange: handleLanguageChange }) {
+export default function CodeEditorNavbar({ languages = [], curLanguage = 'JavaScript', onLanguageChange: handleLanguageChange }) {
   const [showTooltip, setShowTooltip] = useState(false);
   const [buttonRect, setButtonRect] = useState(null);
   const buttonRef = useRef(null);
@@ -45,10 +45,10 @@ export default function CodeEditorNavbar({ language = 'JavaScript', onLanguageCh
 
   return (
     <div className="bg-[#FFFAF0] px-4 py-2 flex items-center justify-between relative overflow-visible">
-      <Listbox value={language} onChange={handleLanguageChange}>
+      <Listbox value={curLanguage} onChange={handleLanguageChange}>
         <div className="relative">
           <ListboxButton className="grid cursor-default grid-cols-1 rounded-md bg-white py-1.5 pl-3 pr-2 text-left text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-            <span className="col-start-1 row-start-1 truncate pr-6">{language}</span>
+            <span className="col-start-1 row-start-1 truncate pr-6">{curLanguage}</span>
             <ChevronUpDownIcon
               aria-hidden="true"
               className="col-start-1 row-start-1 size-5 self-center justify-self-end text-gray-500 sm:size-4"

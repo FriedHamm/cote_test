@@ -26,7 +26,7 @@ const disableAutocomplete = autocompletion({
 export default function CodeEditor({
                                      curLanguage = 'JavaScript',
                                      curCode = '',
-                                     setCurCode
+                                     setCurCode = () => {}
                                    }) {
   // templateCode와 현재 사용중인 언어의 CodeMirror extension 상태
   const languageExtension = languageExtensions[curLanguage];

@@ -6,6 +6,7 @@ import signupScheme from "@/yup/signupScheme";
 import {useRouter} from "next/navigation";
 import {useDispatch} from "react-redux";
 import {addAlert} from "@/store/slices/alertSlice";
+import {checkAuth} from "@/store/slices/authSlice";
 
 export default function LoginPage() {
   const { register, handleSubmit, formState: { errors } } = useForm({
@@ -85,7 +86,7 @@ export default function LoginPage() {
             )}
 
             <input
-              id="password"
+              id="password-confirm"
               type="password"
               required
               autoComplete="new-password"

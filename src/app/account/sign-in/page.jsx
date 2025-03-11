@@ -84,7 +84,7 @@ export default function LoginPage() {
         dispatch(
           addAlert({
             type: "warning",
-            message: `알 수 없는 오류가 발생하였습니다. (Status: ${status}) 네트워크 연결 확인 후 해결이 안될 시 고객센터에 문의 바랍니다.`,
+            message: `알 수 없는 오류가 발생하였습니다. 네트워크 연결 확인 후 해결이 안될 시 고객센터에 문의 바랍니다.`,
           })
         );
       }

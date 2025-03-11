@@ -7,8 +7,10 @@ import {
   MdOutlineDescription,
   MdPeopleOutline
 } from "react-icons/md";
+import {useSelector} from "react-redux";
 
 export default function ProblemNav() {
+  const {isLoggedIn} = useSelector(state => state.auth);
   const pathname = usePathname();
   const [curTab, setCurTab] = useState(pathname.split('/')[3]);
   const router = useRouter();
@@ -28,10 +30,14 @@ export default function ProblemNav() {
   // 각 버튼에 필요한 정보를 배열로 정의
   const navItems = [
     { tab: "description", label: "문제 설명", icon: MdOutlineDescription },
-    { tab: "solution-explanation", label: "문제 해설", icon: MdLightbulbOutline },
+    // { tab: "solution-explanation", label: "문제 해설", icon: MdLightbulbOutline },
     // { tab: "community-solution", label: "커뮤니티 문제풀이", icon: MdPeopleOutline },
-    { tab: "submission", label: "제출 내역", icon: MdHistory }
+    // { tab: "submission", label: "제출 내역", icon: MdHistory }
   ];
+
+  if (isLoggedIn) {
+    navItems.push({ tab: "submission", label: "제출 내역", icon: MdHistory });
+  }
 
   return (
     <nav aria-label="problem navigation" className="bg-[#FBF9F4] flex justify-start gap-6  px-4 py-2 border-b-[#F7F7F7] border-b border-t-lg overflow-x-scroll shrink-0">
