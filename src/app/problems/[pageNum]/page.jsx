@@ -28,7 +28,7 @@ export default async function Problems({params, searchParams}) {
   }
 
 
-  if (errorMessage) {
+  if (errorMessage.length) {
     return <ErrorGuard errorMessage={errorMessage} redirectUrl="/"/>;
   }
 

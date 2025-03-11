@@ -119,7 +119,7 @@ export default async function ProblemLayout({params, children}) {
     }
   });
 
-  if (errorMessage) {
+  if (errorMessage.length) {
     return <ErrorGuard errorMessage={errorMessage} redirectUrl={`/problems/1`} />;
   }
   return (
