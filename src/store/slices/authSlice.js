@@ -80,6 +80,7 @@ const authSlice = createSlice({
       .addCase(checkAuth.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload || action.error.message;
+        state.isLoggedIn = true;
       });
   },
 });

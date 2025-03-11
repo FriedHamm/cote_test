@@ -27,7 +27,6 @@ export default function PasswordResetModal({open = false, setOpen}) {
     const password = data.password;
     try {
       const response = await api.patch('/account/v1/user', { password });
-      console.log(response);
       setOpen(false);
       dispatch(addAlert({type: 'info', message: '비밀번호가 정상적으로 변경되었습니다.'}));
     } catch (error) {
@@ -62,7 +61,7 @@ export default function PasswordResetModal({open = false, setOpen}) {
           >
             <form onSubmit={handleSubmit(onSubmit)}>
               <label htmlFor="password" className="block text-sm font-medium text-gray-900">
-                패스워드
+                비밀번호
               </label>
               <div className="mt-2 flex flex-col gap-2">
                 <input
@@ -70,7 +69,7 @@ export default function PasswordResetModal({open = false, setOpen}) {
                   type="password"
                   required
                   autoComplete="new-password"
-                  placeholder="대문자, 숫자, 특수문자 포함 8~20자"
+                  placeholder="영문자(대,소), 숫자, 특수문자 포함 8~20자"
                   {...register("password")}
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:outline-indigo-600 sm:text-sm"
                 />
@@ -79,7 +78,7 @@ export default function PasswordResetModal({open = false, setOpen}) {
                 )}
 
                 <input
-                  id="password"
+                  id="password-confirm"
                   type="password"
                   required
                   autoComplete="new-password"
