@@ -1,8 +1,9 @@
 'use client'
 import {useContext, useRef, useState} from "react";
 import {ProblemContext} from "@/app/problem/ProblemContent";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useRouter} from "next/navigation";
+import {addAlert} from "@/store/slices/alertSlice";
 
 const testTestCases = [
   {
@@ -24,29 +25,42 @@ const testTestCases = [
 // 각 클릭시 핸들러
 // 테스트 결과는 상위에서 받아야 할듯?..
 
-export default function Console({testCases, testResult}) {
+export default function Console() {
   const [selectedTestCase, setSelectedTestCase] = useState(0); // 선택된 테스트 케이스
   const [selectedTestResult, setSelectedTestResult] = useState(0); // 선택된 테스트 결과 케이스
   const [selectedConsoleTab, setSelectedConsoleTab] = useState(0); // 선택된 탭
   const [isRunLoading, setIsRunLoading] = useState(false); // 실행하기를 누르고 응답을 받기 전까지는 true 그렇지 않으면 false
   const [isSubmitLoading, setIsSubmitLoading] = useState(false); // 제출하기용
-  const {onRunClick, onSubmitClick} = useContext(ProblemContext);
+  const dispatch = useDispatch();
+  const [runResult, setRunResult] = useState(null);
+  const {onRunClick, onSubmitClick, setSubmitResult} = useContext(ProblemContext);
 
   const curSelectedTestCase = selectedConsoleTab === 0 ? selectedTestCase : selectedTestResult;
 
   const handleRunClick = async () => {
     setIsRunLoading(true);
-
-    await onRunClick();
-    setIsRunLoading(false);
-    setSelectedConsoleTab(1);
-    setSelectedTestResult(0);
+    try {
+      const response = await onRunClick();
+      setRunResult(response);
+      setSelectedConsoleTab(1);
+      setSelectedTestResult(0);
+    } catch (error) {
+      dispatch(addAlert({type: 'warning', message: error.message}))
+    } finally {
+      setIsRunLoading(false);
+    }
   }
 
   const handleSubmitClick = async () => {
     setIsSubmitLoading(true);
-    await onSubmitClick();
-    setIsSubmitLoading(false);
+    try {
+      const response = await onSubmitClick();
+      setSubmitResult(response.data);
+    } catch (error) {
+      dispatch(addAlert({type: 'warning', message: error.message}))
+    } finally {
+      setIsSubmitLoading(false);
+    }
   }
 
   const handleSelectedTestCaseChange = (selectedTestCase) => {
@@ -61,7 +75,8 @@ export default function Console({testCases, testResult}) {
                   isRunLoading={isRunLoading}/>
       <TestCaseViewer selectedConsoleTab={selectedConsoleTab} selectedTestCase={curSelectedTestCase}
                       onSelectedTestCaseChange={handleSelectedTestCaseChange}
-                      isRunLoading={isRunLoading}/>
+                      isRunLoading={isRunLoading}
+                      runResult={runResult}/>
       <RunSubmitButtonContainer isRunLoading={isRunLoading} isSubmitLoading={isSubmitLoading}
                                 onRunClick={handleRunClick} onSubmitClick={handleSubmitClick}/>
     </div>
@@ -97,7 +112,7 @@ function RunSubmitButtonContainer({
                                     isRunLoading,
                                     isSubmitLoading
                                   }) {
-  const { isLoggedIn } = useSelector(state => state.auth);
+  const {isLoggedIn} = useSelector(state => state.auth);
   const router = useRouter();
 
   // 로그인 여부에 따른 onClick 핸들러 결정
@@ -119,7 +134,7 @@ function RunSubmitButtonContainer({
         disabled={isRunLoading || isSubmitLoading}
         className="disabled:cursor-not-allowed flex gap-1 items-center rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
       >
-        {(isRunLoading || isSubmitLoading) && <Loading />}
+        {(isRunLoading || isSubmitLoading) && <Loading/>}
         {isLoggedIn ? "실행하기" : "로그인"}
       </button>
       <button
@@ -129,31 +144,26 @@ function RunSubmitButtonContainer({
         onClick={submitButtonClick}
         className="disabled:cursor-not-allowed flex gap-1 items-center rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
       >
-        {(isRunLoading || isSubmitLoading) && <Loading />}
+        {(isRunLoading || isSubmitLoading) && <Loading/>}
         {isLoggedIn ? "제출하기" : "하러가기"}
       </button>
     </div>
   );
 }
 
-// 여기는 로딩 중이면 pulse로 바꾸기
-// 여기는 isSubmitLoading은 필요 없음
-// 여기서 관건은 tab 번호가 뭔지에 따라서 다르게 랜더링 해야함
-// 그리고
-
-// 여기서 버튼을 누를텐데
-// 상위에서 현재 탭이 무엇인지 판단해서 스위칭을 해줘야 함
+// WRO, SOL TLE, MEM, RTE, SYS
+// WRO하고 SOL만 정상 랜더링 나머지는..
 
 function TestCaseViewer({
-                          testCases = testTestCases,
-                          testResult,
+
+                          runResult,
                           isRunLoading,
                           selectedConsoleTab,
                           selectedTestCase,
                           onSelectedTestCaseChange: handleSelectedTestCaseChange
                         }) {
-  const { runTestCase } = useContext(ProblemContext);
-  console.log(runTestCase);
+  const {runTestCase} = useContext(ProblemContext);
+
   const convertedRunTestCase = useRef(
     Object.entries(runTestCase).map(
       ([id, {input, output}]) => {
@@ -166,11 +176,48 @@ function TestCaseViewer({
     ));
 
 
-  return (
-    <div aria-label="Test Case Viewer" className={`grow overflow-scroll py-2 ${isRunLoading && 'animate-pulse'}`}>
-      {!testResult && selectedConsoleTab === 1 ? // 아직 run 안눌렀는데 결과 먼저 보려고 하는 경우
-        <div className="my-auto text-center text-gray-500">코드 실행을 먼저 해주세요.</div>
-        :
+  let content;
+
+  // 1. selectedConsoleTab이 1인데 아직 실행 결과(runResult)가 없는 경우
+  if (selectedConsoleTab === 1 && !runResult) {
+    content = <div>코드 실행을 먼저 해주세요.</div>;
+  }
+  // 2. selectedConsoleTab이 0인 경우: 테스트케이스 목록과 입력값 그대로 렌더링
+  else if (selectedConsoleTab === 0) {
+    content = (
+      <>
+        <div className="flex gap-2 px-3">
+          {convertedRunTestCase.current.map((_, index) => (
+            <button
+              key={index}
+              type="button"
+              onClick={() => handleSelectedTestCaseChange(index)}
+              className={`shrink-0 rounded-md px-3 py-2 text-sm font-semibold text-indigo-600 ${
+                selectedTestCase === index ? 'bg-indigo-50 shadow-sm' : ''
+              } hover:bg-indigo-100`}
+            >
+              테스트케이스 {index + 1}
+            </button>
+          ))}
+        </div>
+        <div className="px-3 mt-3">
+          {convertedRunTestCase.current[selectedTestCase].input.map((input, index) => (
+            <div className="mt-2" key={index}>
+              <h4 className="text-sm text-gray-400">{input.key}</h4>
+              <p className="bg-gray-400 py-2 px-2 rounded-lg">
+                {typeof input.value === 'object' ? JSON.stringify(input.value) : input.value}
+              </p>
+            </div>
+          ))}
+        </div>
+      </>
+    );
+  }
+  // 3. selectedConsoleTab이 1이고 runResult가 있을 때
+  else if (selectedConsoleTab === 1 && runResult) {
+    // 3-1. runResult.final_result가 WRO 또는 SOL인 경우: 테스트케이스 목록과 입력값 렌더링 + 체크 표시
+    if (runResult.final_result === 'WRO' || runResult.final_result === 'SOL') {
+      content = (
         <>
           <div className="flex gap-2 px-3">
             {convertedRunTestCase.current.map((_, index) => (
@@ -178,25 +225,44 @@ function TestCaseViewer({
                 key={index}
                 type="button"
                 onClick={() => handleSelectedTestCaseChange(index)}
-                className={`shrink-0 rounded-md  px-3 py-2 text-sm font-semibold text-indigo-600 ${selectedTestCase === index ? 'bg-indigo-50 shadow-sm' : undefined}  hover:bg-indigo-100`}
+                className={`shrink-0 rounded-md px-3 py-2 text-sm font-semibold text-indigo-600 ${
+                  selectedTestCase === index ? 'bg-indigo-50 shadow-sm' : ''
+                } hover:bg-indigo-100`}
               >
-                테스트케이스{index + 1}
+                테스트케이스 {index + 1}
+                <span className="ml-1">✔</span>
               </button>
             ))}
           </div>
           <div className="px-3 mt-3">
             {convertedRunTestCase.current[selectedTestCase].input.map((input, index) => (
-              <div className='mt-2' key={index}>
+              <div className="mt-2" key={index}>
                 <h4 className="text-sm text-gray-400">{input.key}</h4>
-                <p
-                  className="bg-gray-400 py-2 px-2 rounded-lg">{typeof input.value === 'object' ? JSON.stringify(input.value) : input.value}</p>
+                <p className="bg-gray-400 py-2 px-2 rounded-lg">
+                  {typeof input.value === 'object' ? JSON.stringify(input.value) : input.value}
+                </p>
               </div>
             ))}
           </div>
         </>
-      }
+      );
+    }
+    // 3-2. 그 외의 에러 타입(메모리 초과, 시간 초과, 런타임 에러, 컴파일 에러 등)인 경우: runResult의 상세 결과만 렌더링
+    else {
+      content = (
+        <p>{runResult.final_result}</p>
+      );
+    }
+  }
+
+  return (
+    <div
+      aria-label="Test Case Viewer"
+      className={`grow overflow-scroll py-2 ${isRunLoading ? 'animate-pulse' : ''}`}
+    >
+      {content}
     </div>
-  )
+  );
 }
 
 function Loading() {

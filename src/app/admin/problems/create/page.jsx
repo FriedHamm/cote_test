@@ -6,6 +6,10 @@ import {Switch} from '@headlessui/react'
 import CodeEditor from "@/app/problem/CodeEditor";
 import api from "@/axios/axiosConfig";
 import {formatLanguages} from "@/app/utils/formatLanguages";
+import codeEditor from "@/app/problem/CodeEditor";
+import {useDispatch} from "react-redux";
+import {addAlert} from "@/store/slices/alertSlice";
+import {PhotoIcon} from "@heroicons/react/16/solid";
 
 const testLanguages = [
   {
@@ -41,49 +45,119 @@ export default function ProblemCreationPage() {
   )
 }
 
-function ProblemCreationForm(props) {
+function ProblemCreationForm() {
   const {control, register, handleSubmit, formState: {errors}, reset, setValue} = useFormContext();
 
   const [languages, setLanguages] = useState(testLanguages);
 
+  const dispatch = useDispatch();
+
   const onSubmit = async form => {
-
+    // initcode의 경우에는 form에서 배열 형태로 관리되기 때문에, 필터링을 거쳐서 제대로된 배열로 수정함. template_code랑 language가 모두 작성되어 있어야 함.
     const initcode = form.initcode ? form.initcode.filter(item => item && item.template_code && item.language) : [];
+    if (!initcode.length) {
+      dispatch(addAlert({type: 'warning', message: "최소 한 언어에 대한 템플릿 코드를 작성해야 합니다."}));
+      return;
+    }
+    // maxconstraint도 마찬가지임. 하나의 필드라도 입력하지 않았다면 maxconstraint에 들어가지 않음
     const maxconstraint = form.maxconstraint ? form.maxconstraint.filter(item => item && item.language && item.max_run_time && item.max_memory) : [];
-    const run_testcase = form.run_testcase.reduce((acc, test, index) => {
-      const inputObject = {};
-      form.variables.forEach((variable, varIndex) => {
-        // 입력값에 대해 무조건 JSON.parse를 시도
-        inputObject[variable.name] = parseValue(test.input[varIndex] || '');
-      });
-      acc[String(index + 1)] = {
-        input: inputObject,
-        output: parseValue(test.output),
-      };
-      return acc;
-    }, {});
+    if (!maxconstraint.length) {
+      dispatch(addAlert({type: 'warning', message: "제한사항을 입력해야 합니다."}));
+      return;
+    }
 
-    const submit_testcase = form.submit_testcase.reduce((acc, test, index) => {
+    if (!form.variables.length) {
+      dispatch(addAlert({type: 'warning', message: "최소 한개 이상의 매개변수를 포함해야 합니다."}));
+      return;
+    }
+
+    let run_testcase = {};
+
+    for (let index = 0; index < form.run_testcase.length; index++) {
+      const test = form.run_testcase[index];
       const inputObject = {};
-      form.variables.forEach((variable, varIndex) => {
-        // 입력값에 대해 무조건 JSON.parse를 시도
-        inputObject[variable.name] = parseValue(test.input[varIndex] || '');
-      });
-      acc[String(index + 1)] = {
-        input: inputObject,
-        output: parseValue(test.output),
-      };
-      return acc;
-    }, {});
-    const { variables, ...rest } = form;
-    const finalForm = {...rest, initcode, maxconstraint, run_testcase, submit_testcase, editorial: '', apply_db_constraints: true, tags: []};
+      for (let varIndex = 0; varIndex < form.variables.length; varIndex++) {
+        try {
+          inputObject[form.variables[varIndex].name] = JSON.parse(test.input[varIndex]);
+        } catch (error) {
+          dispatch(addAlert({
+            type: 'warning',
+            message: `예제 테스트케이스 ${index}번째 ${form.variables[varIndex].name}의 형식이 잘못되었습니다.`
+          }));
+          return;
+        }
+      }
+
+      try {
+        run_testcase[String(index + 1)] = {
+          input: inputObject,
+          output: JSON.parse(test.output),
+        };
+      } catch (error) {
+        dispatch(addAlert({type: 'warning', message: `예제 테스트케이스 ${index}반쩨 츨략깂의 형식이 잘못되었습니다.`}));
+      }
+    }
+
+    let submit_testcase = {};
+
+    for (let index = 0; index < form.submit_testcase.length; index++) {
+      const test = form.submit_testcase[index];
+      const inputObject = {};
+      for (let varIndex = 0; varIndex < form.variables.length; varIndex++) {
+        try {
+          inputObject[form.variables[varIndex].name] = JSON.parse(test.input[varIndex]);
+        } catch (error) {
+          dispatch(addAlert({
+            type: 'warning',
+            message: `실행 테스트케이스 ${index}번째 ${form.variables[varIndex].name}의 형식이 잘못되었습니다.`
+          }));
+          return;
+        }
+      }
+
+      try {
+        submit_testcase[String(index + 1)] = {
+          input: inputObject,
+          output: JSON.parse(test.output),
+        };
+      } catch (error) {
+        dispatch(addAlert({type: 'warning', message: `실행 테스트케이스 ${index}번째 출력값의 형식이 잘못되었습니다.`}));
+        return;
+      }
+    }
+
+    const {variables, ...rest} = form;
+    const finalForm = {
+      ...rest,
+      initcode,
+      maxconstraint,
+      run_testcase,
+      submit_testcase,
+      editorial: '',
+      apply_db_constraints: true,
+      tags: []
+    };
     console.log('로그', finalForm);
 
     try {
-      const response = api.post('administrator/v1/cote/problems', finalForm);
-      console.log(response);
+      const response = await api.post('administrator/v1/cote/problems', finalForm);
+      dispatch(addAlert({type: 'info', message: '문제가 정상적으로 등록되었습니다.'}));
+      reset();
     } catch (error) {
-      console.log('문제 넣는 과정에서 에러 발생', error);
+      if (error.response) {
+        if (error.status === 403 || error.status === 401) {
+          dispatch(addAlert({type: 'warning', message: '권한 없는 유저입니다.'}))
+          // 라우팅을 해야하긴 함. 근데 말이 안되는 상황임.. 여기까지 어떻게 접근?..
+        } else if (error.status === 403) {
+          dispatch(addAlert({type: 'warning', message: '문제 제목이 중복이 아닌지 혹은 입력한 데이터가 정상적인지 확인 바랍니다.'}))
+        } else if (error.status === 500) {
+          dispatch(addAlert({type: 'warning', message: '내부 서버 에러입니다. 다시 시도해주세요.'}));
+        }
+      } else if (error.request) {
+        dispatch(addAlert({type: 'warning', message: '네트워크를 먼저 확인하신 후 해결이 안된다면 문의 바랍니다.'}));
+      } else {
+        dispatch(addAlert({type: 'warning', message: error.message}));
+      }
     }
 
   };
@@ -168,14 +242,14 @@ function ProblemCreationForm(props) {
         </div>
 
         <div className="mt-6 flex items-center justify-end gap-x-6">
-          <button type="button" className="text-sm/6 font-semibold text-gray-900">
-            Cancel
-          </button>
+          {/*<button type="button" className="text-sm/6 font-semibold text-gray-900">*/}
+          {/*  Cancel*/}
+          {/*</button>*/}
           <button
             type="submit"
             className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            Save
+            제출하기
           </button>
         </div>
       </div>
@@ -268,13 +342,26 @@ function LanguageItem({language, formattedLanguage, index}) {
             name={`initcode[${index}].template_code`}
             control={control}
             defaultValue=""
-            render={({field: {onChange, value}}) => (
-              <CodeEditor
-                curCode={value}
-                setCurCode={onChange}
-                curLanguage={formattedLanguage}
-              />
-            )}
+            rules={{required: true}}
+            render={({field: {onChange, value}, fieldState: {error}}) => {
+              const editorRef = useRef(null);
+
+              useEffect(() => {
+                if (error && editorRef.current) {
+                  editorRef.current.focus();
+                }
+
+
+              }, [error])
+              return (
+                <CodeEditor
+                  ref={editorRef}
+                  curCode={value}
+                  setCurCode={onChange}
+                  curLanguage={formattedLanguage}
+                />
+              )
+            }}
           />
           <MaxConstraintItem index={index} language={language}/>
         </div>
@@ -314,7 +401,7 @@ function MaxConstraintItem({formattedLanguage, language, index}) {
         시간 제한:
         <input
           type="number"
-          {...register(`maxconstraint[${index}].max_run_time`, {valueAsNumber: true})}
+          {...register(`maxconstraint[${index}].max_run_time`, {valueAsNumber: true, required: true})}
           placeholder="단위는 ms 입니다."
         />
       </label>
@@ -322,11 +409,147 @@ function MaxConstraintItem({formattedLanguage, language, index}) {
         메모리 제한:
         <input
           type="number"
-          {...register(`maxconstraint[${index}].max_memory`, {valueAsNumber: true})}
-          placeholder="단위는 byte 입니다."
+          {...register(`maxconstraint[${index}].max_memory`, {valueAsNumber: true, required: true})}
+          placeholder="단위는 kb 입니다."
         />
       </label>
     </fieldset>
+  )
+}
+
+function JsonFileUpload({fieldName}) {
+  const dispatch = useDispatch();
+  const {setValue, watch} = useFormContext();
+
+  async function handleJsonUpload(e) {
+
+    const file = e.target.files[0];
+    let text;
+
+    try {
+      text = await file.text();
+    } catch (error) {
+      dispatch(addAlert({type: 'warning', message: '파일을 읽는 중에 문제가 발생했습니다.'}));
+      return;
+    }
+
+    let jsonObject;
+    try {
+      jsonObject = JSON.parse(text);
+    } catch (error) {
+      dispatch(addAlert({type: 'warning', message: '파일을 파싱하는 과정에서 문제가 발생했습니다.'}));
+    }
+
+    if (
+      typeof jsonObject !== "object" ||
+      Array.isArray(jsonObject) ||
+      jsonObject === null
+    ) {
+      dispatch(addAlert({type: 'warning', message: 'JSON은 객체 형태여야 합니다.'}));
+      return;
+    }
+
+    // props로 전달받은 filedName을 이용해 초기화 (예: run_testcase)
+    setValue(fieldName, []);
+
+    // JSON 객체에서 테스트 케이스 배열 추출
+    const testCases = Object.values(jsonObject);
+
+    if (testCases.length === 0) {
+      dispatch(addAlert({type: 'warning', message: '업로드된 JSON에 테스트케이스가 없습니다.'}));
+      return;
+    }
+
+// 첫 번째 테스트케이스의 input에서 변수 이름을 추출하여 variables 필드를 초기화
+    const firstTestCase = testCases[0];
+    if (!firstTestCase.hasOwnProperty('input') || typeof firstTestCase.input !== 'object' || firstTestCase.input === null || Array.isArray(firstTestCase.input)) {
+      dispatch(addAlert({type: 'warning', message: '첫 번째 테스트케이스의 input 형식이 올바르지 않습니다.'}));
+      return;
+    }
+    const variableKeys = Object.keys(firstTestCase.input);
+    if (variableKeys.length === 0) {
+      dispatch(addAlert({type: 'warning', message: '첫 번째 테스트케이스의 input에 변수가 없습니다.'}));
+      return;
+    }
+
+// variables 필드를 JSON에서 추출한 변수명으로 초기화
+    setValue('variables', variableKeys.map(key => ({name: key})));
+
+// props로 전달받은 filedName (예: run_testcase) 필드를 초기화
+    setValue(fieldName, []);
+
+    for (let i = 0; i < testCases.length; i++) {
+      const testCase = testCases[i];
+
+      // input과 output 키가 모두 있는지 확인
+      if (!testCase.hasOwnProperty("input") || !testCase.hasOwnProperty("output")) {
+        dispatch(addAlert({
+          type: "warning",
+          message: `테스트 케이스 ${i + 1}에 input 또는 output 키가 존재하지 않습니다.`,
+        }));
+        return;
+      }
+
+      // input 값이 객체인지도 확인 (null은 객체가 아님)
+      if (typeof testCase.input !== "object" || testCase.input === null || Array.isArray(testCase.input)) {
+        dispatch(addAlert({type: "warning", message: `테스트 케이스 ${i + 1}의 input이 유효한 객체가 아닙니다.`}));
+        return;
+      }
+
+      // 현재 테스트케이스의 input 키들을 추출하고 첫 번째 테스트케이스와 일치하는지 확인
+      const currentKeys = Object.keys(testCase.input);
+      if (currentKeys.length !== variableKeys.length || !variableKeys.every(key => currentKeys.includes(key))) {
+        dispatch(addAlert({
+          type: "warning",
+          message: `테스트 케이스 ${i + 1}의 input 변수명이 일치하지 않습니다. 예상 변수: ${variableKeys.join(', ')}, 현재 변수: ${currentKeys.join(', ')}`
+        }));
+        return;
+      }
+
+      // input 객체의 값을 첫 번째 테스트케이스의 변수 순서대로 업데이트 (index 기반)
+      for (let varIndex = 0; varIndex < variableKeys.length; varIndex++) {
+        setValue(`${fieldName}.${i}.input.${varIndex}`, JSON.stringify(testCase.input[variableKeys[varIndex]]));
+      }
+
+      // output 값 업데이트: 예: run_testcase.0.output
+      setValue(`${fieldName}.${i}.output`, JSON.stringify(testCase.output));
+    }
+  }
+
+  return (
+    <div>
+      {/*<label htmlFor="cover-photo" className="block text-sm/6 font-medium text-gray-900">*/}
+      {/*  Cover photo*/}
+      {/*</label>*/}
+      <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+        <div className="text-center">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
+               stroke="currentColor" className="mx-auto size-12 text-gray-300">
+            <path strokeLinecap="round" strokeLinejoin="round"
+                  d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z"/>
+          </svg>
+          <div className="mt-4 flex text-sm/6 text-gray-600">
+          <label
+              htmlFor={`file-upload-${fieldName}`}
+              className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+            >
+              <span>Json 형식으로 파일을 넣어보세요.</span>
+              <input
+                id={`file-upload-${fieldName}`}
+                name={`file-upload-${fieldName}`}
+                type="file"
+                accept="application/json"
+                className="sr-only"
+                onChange={handleJsonUpload}
+              />
+            </label>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+
   )
 }
 
@@ -369,15 +592,6 @@ function VariableSection() {
   )
 }
 
-const parseValue = (value) => {
-  try {
-    return JSON.parse(value);
-  } catch (error) {
-    // JSON.parse에 실패하면, 입력값이 유효한 JSON이 아니므로 원래 문자열 그대로 반환합니다.
-    return value;
-  }
-};
-
 function RunTestCaseSection() {
   const {register, control} = useFormContext();
   const variables = useWatch({
@@ -393,6 +607,7 @@ function RunTestCaseSection() {
     <section>
       <div className="divide-y divide-gray-200">
         <h3 className="text-base/7 font-semibold text-gray-900">예제 테스트케이스</h3>
+        <JsonFileUpload fieldName="run_testcase"/>
         {runTestCaseFields.map((field, index) => (
           <div key={field.id} className="mt-2">
             <h4 className="text-sm/6 font-medium text-gray-900">{index + 1}</h4>
@@ -401,7 +616,7 @@ function RunTestCaseSection() {
                 <label key={varIndex}>
                   <span className="text-nowrap text-sm/6 text-gray-600">{variable.name}</span>
                   <input
-                    {...register(`run_testcase.${index}.input.${varIndex}`)}
+                    {...register(`run_testcase.${index}.input.${varIndex}`, {required: true})}
                     type="text"
                     className=" block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                   />
@@ -411,7 +626,7 @@ function RunTestCaseSection() {
               <label>
                 <span className="text-nowrap text-sm/6 text-gray-600">출력값</span>
                 <input
-                  {...register(`run_testcase.${index}.output`)}
+                  {...register(`run_testcase.${index}.output`, {required: true})}
                   placeholder="Output"
                   className=" block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
@@ -453,6 +668,7 @@ function SubmitTestCaseSection() {
     <section>
       <div className="divide-y divide-gray-200">
         <h3 className="text-base/7 font-semibold text-gray-900">제출용 테스트케이스</h3>
+        <JsonFileUpload fieldName="submit_testcase"/>
         {submitTestCaseFields.map((field, index) => (
           <div key={field.id} className="mt-2">
             <h4 className="text-sm/6 font-medium text-gray-900">{index + 1}</h4>

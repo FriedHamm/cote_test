@@ -6,6 +6,7 @@ import {python} from "@codemirror/lang-python";
 import {java} from "@codemirror/lang-java";
 import {solarizedLight, solarizedDark, solarizedLightStyle} from "@uiw/codemirror-themes-all";
 import {autocompletion} from "@codemirror/autocomplete";
+import {forwardRef, useImperativeHandle, useRef} from "react";
 
 const languageExtensions = {
   JavaScript: javascript(),
@@ -23,20 +24,27 @@ const disableAutocomplete = autocompletion({
   ]
 });
 
-export default function CodeEditor({
-                                     curLanguage = 'JavaScript',
-                                     curCode = '',
-                                     setCurCode = () => {}
-                                   }) {
+const CodeEditor = forwardRef(({curLanguage = 'JavaScript', curCode = '', setCurCode = () => {}}, ref) => {
   // templateCode와 현재 사용중인 언어의 CodeMirror extension 상태
   const languageExtension = languageExtensions[curLanguage];
+  const editorRef = useRef(null);
 
   const handleCodeChange = (value) => {
     setCurCode(value);
   };
 
+  useImperativeHandle(ref, () => ({
+    focus() {
+
+      if (editorRef.current && editorRef.current.view) {
+        editorRef.current.view.focus();
+      }
+    },
+  }));
+
   return (
     <CodeMirror
+      ref={editorRef}
       className="overflow-y-scroll flex-grow"
       value={curCode}
       onChange={handleCodeChange}
@@ -62,4 +70,6 @@ export default function CodeEditor({
       theme={solarizedLight}
     />
   );
-}
+});
+
+export default CodeEditor;

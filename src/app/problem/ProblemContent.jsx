@@ -20,17 +20,22 @@ export default function ProblemContent({ children, problemDetail, initCode = {},
   const codes = useRef(JSON.parse(JSON.stringify(initCode)));
   const [curLanguage, setCurLanguage] = useState(languages.current[0]);
   const curCode = codes?.current?.[curLanguage]?.code;
+  const [submitResult, setSubmitResult] = useState(null);
 
-  console.log('모든 언어', codes.current);
 
   const handleRunClick = async () => {
 
-    const data = {problem_id:problemDetail?.problem_id, language_id: codes.current[curLanguage].languageId, submitted_code: codes.current[curLanguage].code}
+    const data = {setSubmitResult, problem_id:problemDetail?.problem_id, language_id: codes.current[curLanguage].languageId, submitted_code: codes.current[curLanguage].code}
     try {
       const response = await api.post(`cote/v1/submissions?type=run`, data);
       console.log('실행 결과임', response.data);
+      return response.data;
     } catch (error) {
-      console.log(error);
+      if (error.response || error.request) {
+        return new Error(`코드를 실행하는데 문제가 발생하였습니다. ${error.status}`);
+      } else {
+        throw error;
+      }
     }
   }
 
@@ -40,8 +45,13 @@ export default function ProblemContent({ children, problemDetail, initCode = {},
     try {
       const response = await api.post(`cote/v1/submissions?type=submit`, data);
       console.log('제출 결과임', response.data);
+      return response.data;
     } catch (error) {
-      console.log(error);
+      if (error.response || error.request) {
+        throw new Error(`코드를 제출하는데 문제가 발생하였습니다. ${error.status}`);
+      } else {
+        throw error;
+      }
     }
   }
 
@@ -89,7 +99,6 @@ export default function ProblemContent({ children, problemDetail, initCode = {},
 
 function CodeEditorContainer({ languages, curLanguage, onLanguageChange: handleLanguageChange, curCode, setCurCode}) {
 
-  console.log('여기는 컨테이너', curCode);
 
   return (
     <Panel defaultSize={50} minSize={30} className="hidden md:block">
