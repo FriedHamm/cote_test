@@ -9,6 +9,17 @@ const environments = {
   Preview: 'text-gray-400 bg-gray-400/10 ring-gray-400/20',
   Production: 'text-indigo-400 bg-indigo-400/10 ring-indigo-400/30',
 }
+
+// {
+//   "id": 51,
+//   "user_id": 101,
+//   "problem_id": 1,
+//   "language_id": 2,
+//   "final_result": "SOL",
+//   "submitted_code": "def solution(n, friends):\n\t# 각 사람의 친구 관계를 저장할 인접 리스트 생성\n\tgraph = [[] for _ in range(n)]\n\t\n\t# 주어진 친구 관계로 그래프(인접 리스트) 구성\n\tfor a, b in friends:\n\t\tgraph[a].append(b)\n\t\tgraph[b].append(a)\n\t...",
+//   "result_detail": "",
+//   "submitted_at": "2025-03-03T15:00:00Z"
+// }
 const deployments = [
   {
     id: 1,

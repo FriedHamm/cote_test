@@ -29,7 +29,7 @@ const loginSchema = yup.object().shape({
   tosAgree: yup
     .boolean()
     .oneOf([true], "서비스 이용약관에 동의해 주세요."),
-  
+
   privacyAgree: yup
     .boolean()
     .oneOf([true], "개인정보 처리방침에 동의해 주세요.")

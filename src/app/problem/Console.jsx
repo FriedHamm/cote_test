@@ -1,9 +1,10 @@
 'use client'
-import {useContext, useRef, useState} from "react";
+import {useContext, useMemo, useRef, useState} from "react";
 import {ProblemContext} from "@/app/problem/ProblemContent";
 import {useDispatch, useSelector} from "react-redux";
 import {useRouter} from "next/navigation";
 import {addAlert} from "@/store/slices/alertSlice";
+import {ConsoleContext} from "@/app/problem/ConsoleContext";
 
 const testTestCases = [
   {
@@ -26,14 +27,20 @@ const testTestCases = [
 // 테스트 결과는 상위에서 받아야 할듯?..
 
 export default function Console() {
-  const [selectedTestCase, setSelectedTestCase] = useState(0); // 선택된 테스트 케이스
-  const [selectedTestResult, setSelectedTestResult] = useState(0); // 선택된 테스트 결과 케이스
-  const [selectedConsoleTab, setSelectedConsoleTab] = useState(0); // 선택된 탭
-  const [isRunLoading, setIsRunLoading] = useState(false); // 실행하기를 누르고 응답을 받기 전까지는 true 그렇지 않으면 false
-  const [isSubmitLoading, setIsSubmitLoading] = useState(false); // 제출하기용
+  const {
+    selectedTestCase,
+    setSelectedTestCase,
+    selectedTestResult,
+    setSelectedTestResult,
+    selectedConsoleTab,
+    setSelectedConsoleTab,
+    isRunLoading,
+    setIsRunLoading,
+    isSubmitLoading,
+    setIsSubmitLoading
+  } = useContext(ConsoleContext);
   const dispatch = useDispatch();
-  const [runResult, setRunResult] = useState(null);
-  const {onRunClick, onSubmitClick, setSubmitResult} = useContext(ProblemContext);
+  const {onRunClick, onSubmitClick, setSubmitResult, setRunResult} = useContext(ProblemContext);
 
   const curSelectedTestCase = selectedConsoleTab === 0 ? selectedTestCase : selectedTestResult;
 
@@ -75,8 +82,7 @@ export default function Console() {
                   isRunLoading={isRunLoading}/>
       <TestCaseViewer selectedConsoleTab={selectedConsoleTab} selectedTestCase={curSelectedTestCase}
                       onSelectedTestCaseChange={handleSelectedTestCaseChange}
-                      isRunLoading={isRunLoading}
-                      runResult={runResult}/>
+                      isRunLoading={isRunLoading}/>
       <RunSubmitButtonContainer isRunLoading={isRunLoading} isSubmitLoading={isSubmitLoading}
                                 onRunClick={handleRunClick} onSubmitClick={handleSubmitClick}/>
     </div>
@@ -154,15 +160,21 @@ function RunSubmitButtonContainer({
 // WRO, SOL TLE, MEM, RTE, SYS
 // WRO하고 SOL만 정상 랜더링 나머지는..
 
-function TestCaseViewer({
+const resultMappingObject = {
+  TLE: '시간 초과',
+  MEM: '메모리 초과',
+  RTE: '런타임 에러',
+  SYS: '시스템 에러',
+  CPE: '컴파일 에러'
+}
 
-                          runResult,
+function TestCaseViewer({
                           isRunLoading,
                           selectedConsoleTab,
                           selectedTestCase,
                           onSelectedTestCaseChange: handleSelectedTestCaseChange
                         }) {
-  const {runTestCase} = useContext(ProblemContext);
+  const {runTestCase, runResult} = useContext(ProblemContext);
 
   const convertedRunTestCase = useRef(
     Object.entries(runTestCase).map(
@@ -174,13 +186,27 @@ function TestCaseViewer({
         };
       }
     ));
+  ;
+
+  // runResult가 null일 경우 빈 배열 또는 null을 반환할 수 있음
+  const formattedTestResults = useMemo(() => {
+    if (!runResult) return [];
+    // max_run_time, max_memory를 제외한 나머지 키의 값을 배열로 변환
+    const { max_run_time, max_memory, ...otherResults } = runResult.result_detail;
+    return Object.values(otherResults);
+  }, [runResult]);
+
+  const solveClass = 'bg-[#E2FFA9] shadow-sm';
+  const hoverSolveClass = 'hover:bg-[#CBFF62]';
+  const wrongClass = 'bg-[#FFA9A9] shadow-md';
+  const hoverWrongClass = 'hover:bg-[#D7FF86]';
 
 
   let content;
 
   // 1. selectedConsoleTab이 1인데 아직 실행 결과(runResult)가 없는 경우
   if (selectedConsoleTab === 1 && !runResult) {
-    content = <div>코드 실행을 먼저 해주세요.</div>;
+    content = <p className="text-gray-500 text-center">코드 실행을 먼저 해주세요.</p>;
   }
   // 2. selectedConsoleTab이 0인 경우: 테스트케이스 목록과 입력값 그대로 렌더링
   else if (selectedConsoleTab === 0) {
@@ -225,12 +251,14 @@ function TestCaseViewer({
                 key={index}
                 type="button"
                 onClick={() => handleSelectedTestCaseChange(index)}
-                className={`shrink-0 rounded-md px-3 py-2 text-sm font-semibold text-indigo-600 ${
-                  selectedTestCase === index ? 'bg-indigo-50 shadow-sm' : ''
-                } hover:bg-indigo-100`}
+                className={`shrink-0 rounded-md px-3 py-2 text-sm font-semibold text-gray-600 ${
+                  selectedTestCase === index
+                    ? (formattedTestResults[index].message === "SOL" ? solveClass : wrongClass)
+                    : ''
+                } ${formattedTestResults[index].message === "SOL" ? hoverSolveClass : hoverWrongClass}`}
               >
                 테스트케이스 {index + 1}
-                <span className="ml-1">✔</span>
+                <span className="ml-1">{formattedTestResults[index].message === "SOL" ? '✔' : 'X'}</span>
               </button>
             ))}
           </div>
@@ -250,7 +278,7 @@ function TestCaseViewer({
     // 3-2. 그 외의 에러 타입(메모리 초과, 시간 초과, 런타임 에러, 컴파일 에러 등)인 경우: runResult의 상세 결과만 렌더링
     else {
       content = (
-        <p>{runResult.final_result}</p>
+        <p className="text-3xl text-red-700 text-center">{resultMappingObject[runResult.final_result]}</p>
       );
     }
   }
