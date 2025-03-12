@@ -25,7 +25,7 @@ export default function ProblemContent({ children, problemDetail, initCode = {},
 
   const handleRunClick = async () => {
 
-    const data = {setSubmitResult, problem_id:problemDetail?.problem_id, language_id: codes.current[curLanguage].languageId, submitted_code: codes.current[curLanguage].code}
+    const data = {problem_id:problemDetail?.problem_id, language_id: codes.current[curLanguage].languageId, submitted_code: codes.current[curLanguage].code}
     try {
       const response = await api.post(`cote/v1/submissions?type=run`, data);
       console.log('실행 결과임', response.data);
@@ -66,7 +66,7 @@ export default function ProblemContent({ children, problemDetail, initCode = {},
   }
 
   return (
-    <ProblemContext.Provider value={{ onSubmitClick: handleSubmitClick, onRunClick:handleRunClick, title, problemId:problemDetail?.problem_id, description:problemDetail?.description, runTestCase:problemDetail?.run_testcase, submitTestCase:problemDetail?.submit_testcase}}>
+    <ProblemContext.Provider value={{ setSubmitResult, submitResult, onSubmitClick: handleSubmitClick, onRunClick:handleRunClick, title, problemId:problemDetail?.problem_id, description:problemDetail?.description, runTestCase:problemDetail?.run_testcase, submitTestCase:problemDetail?.submit_testcase}}>
       {/*{여긴 데스크톱}*/}
       <div className="hidden md:block h-full p-3">
         <PanelGroup direction="horizontal">

@@ -143,6 +143,7 @@ function ProblemCreationForm() {
       const response = await api.post('administrator/v1/cote/problems', finalForm);
       dispatch(addAlert({type: 'info', message: '문제가 정상적으로 등록되었습니다.'}));
       reset();
+      setValue('variables', []);
     } catch (error) {
       if (error.response) {
         if (error.status === 403 || error.status === 401) {
@@ -473,6 +474,7 @@ function JsonFileUpload({fieldName}) {
     }
 
 // variables 필드를 JSON에서 추출한 변수명으로 초기화
+    setValue('variables', [])
     setValue('variables', variableKeys.map(key => ({name: key})));
 
 // props로 전달받은 filedName (예: run_testcase) 필드를 초기화
