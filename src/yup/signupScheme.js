@@ -24,7 +24,15 @@ const loginSchema = yup.object().shape({
   confirmPassword: yup
     .string()
     .oneOf([yup.ref('password'), null], '비밀번호가 일치하지 않습니다.')
-    .required('비밀번호 확인은 필수입니다.')
+    .required('비밀번호 확인은 필수입니다.'),
+
+  tosAgree: yup
+    .boolean()
+    .oneOf([true], "서비스 이용약관에 동의해 주세요."),
+  
+  privacyAgree: yup
+    .boolean()
+    .oneOf([true], "개인정보 처리방침에 동의해 주세요.")
 });
 
 export default loginSchema;

@@ -1,27 +1,41 @@
 'use client';
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import api from "@/axios/axiosConfig";
 import { yupResolver } from "@hookform/resolvers/yup";
 import signupScheme from "@/yup/signupScheme";
-import {useRouter} from "next/navigation";
-import {useDispatch} from "react-redux";
-import {addAlert} from "@/store/slices/alertSlice";
-import {checkAuth} from "@/store/slices/authSlice";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { addAlert } from "@/store/slices/alertSlice";
+import { checkAuth } from "@/store/slices/authSlice";
+import { useEffect } from "react";
 
 export default function LoginPage() {
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, setValue, control, watch, formState: { errors } } = useForm({
     resolver: yupResolver(signupScheme),
     mode: "onChange",
   });
   const router = useRouter();
   const dispatch = useDispatch();
 
+  // useWatch를 사용해 변경 시 리렌더링을 유도합니다.
+  const tosAgree = useWatch({ control, name: "tosAgree", defaultValue: false });
+  const privacyAgree = useWatch({ control, name: "privacyAgree", defaultValue: false });
+
+  // 두 개의 체크박스 상태에 따라 전체 동의(agreeAll)를 자동 업데이트합니다.
+  useEffect(() => {
+    if (tosAgree && privacyAgree) {
+      setValue("agreeAll", true, { shouldValidate: true });
+    } else {
+      setValue("agreeAll", false, { shouldValidate: true });
+    }
+  }, [tosAgree, privacyAgree, setValue]);
+
   const onSubmit = async (data) => {
     try {
       const response = await api.post("/account/v1/auth/token/registration", data);
       if (response.status === 201) {
-        dispatch(addAlert({type: 'info', message: '회원가입에 성공하였습니다.'}));
-        router.push('/')
+        dispatch(addAlert({ type: 'info', message: '회원가입에 성공하였습니다.' }));
+        router.push('/');
       }
     } catch (error) {
       if (error.response) {
@@ -103,20 +117,47 @@ export default function LoginPage() {
         <fieldset className="flex flex-col gap-3 text-sm">
           <legend className="sr-only">회원가입 동의창</legend>
           <label htmlFor="agree-all">
-            <input id="agree-all" type="checkbox"/> <span className="text-gray-400">전체 동의</span>
+            <input
+              id="agree-all"
+              type="checkbox"
+              {...register("agreeAll")}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                setValue("agreeAll", checked, { shouldValidate: true });
+                setValue("tosAgree", checked, { shouldValidate: true });
+                setValue("privacyAgree", checked, { shouldValidate: true });
+              }}
+            />{" "}
+            <span className="text-gray-400">전체 동의</span>
           </label>
-          <hr/>
+          <hr />
           <label htmlFor="privacy-agree">
-            <input id="privacy-agree" type="checkbox"/>
-            {' '}
-            <a href="https://cote.nossi.dev/privacy" target="_blank" rel="noreferrer noopener" className="underline">개인정보 처리방침</a> 동의
+            <input
+              id="privacy-agree"
+              type="checkbox"
+              {...register("privacyAgree", { required: "개인정보 처리방침에 동의해 주세요." })}
+            />
+            {" "}
+            <a href="https://cote.nossi.dev/privacy" target="_blank" rel="noreferrer noopener" className="underline">
+              개인정보 처리방침
+            </a> 동의
+            {errors.privacyAgree && (
+              <p className="text-red-500 text-sm mt-1">{errors.privacyAgree.message}</p>
+            )}
           </label>
           <label htmlFor="tos-agree">
-            <input id="tos-agree" type="checkbox"/>
-            {' '}
-              <a href="https://cote.nossi.dev/tos" target="_blank" rel="noreferrer noopener" className="underline">
-                서비스 이용약관
-              </a> 동의
+            <input
+              id="tos-agree"
+              type="checkbox"
+              {...register("tosAgree", { required: "서비스 이용약관에 동의해 주세요." })}
+            />
+            {" "}
+            <a href="https://cote.nossi.dev/tos" target="_blank" rel="noreferrer noopener" className="underline">
+              서비스 이용약관
+            </a> 동의
+            {errors.tosAgree && (
+              <p className="text-red-500 text-sm mt-1">{errors.tosAgree.message}</p>
+            )}
           </label>
         </fieldset>
 
@@ -133,7 +174,7 @@ export default function LoginPage() {
       <div>
         <div className="relative mt-10">
           <div aria-hidden="true" className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-200"/>
+            <div className="w-full border-t border-gray-200" />
           </div>
           <div className="relative flex justify-center text-sm font-medium">
             <span className="bg-white px-6 text-gray-900">소셜 회원가입</span>
