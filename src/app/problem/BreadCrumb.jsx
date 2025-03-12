@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function BreadCrumb({ problemName }) {
   return (
-    <nav aria-label="Breadcrumb" className="flex absolute inset-x-0 top-0 z-10 py-3 px-8">
+    <nav aria-label="Breadcrumb" className="flex -mt-8 -mb-3 py-3 md:px-8 px-4">
       <ol role="list" className="flex items-center space-x-4">
         {/* Home 아이콘 */}
         <li>

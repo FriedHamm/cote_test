@@ -24,7 +24,7 @@ export default function InfoAlert({id, message, link, onClose}) {
           <InformationCircleIcon aria-hidden="true" className="size-5 text-blue-400"/>
         </div>
         <div className="ml-3 flex-1 md:flex md:justify-between">
-          <p className="text-sm text-blue-700 text-nowrap">{message}</p>
+          <p className="text-sm text-blue-700 text-wrap">{message}</p>
           {link &&
             <p className="mt-3 text-sm md:ml-6 md:mt-0">
               <Link href={link.href} className="whitespace-nowrap font-medium text-blue-700 hover:text-blue-600">

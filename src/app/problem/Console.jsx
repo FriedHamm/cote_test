@@ -186,7 +186,10 @@ function TestCaseViewer({
         };
       }
     ));
-  ;
+
+  const output = useRef(
+    Object.values(runTestCase).map(({output}) => output)
+  );
 
   // runResult가 null일 경우 빈 배열 또는 null을 반환할 수 있음
   const formattedTestResults = useMemo(() => {
@@ -199,7 +202,7 @@ function TestCaseViewer({
   const solveClass = 'bg-[#E2FFA9] shadow-sm';
   const hoverSolveClass = 'hover:bg-[#CBFF62]';
   const wrongClass = 'bg-[#FFA9A9] shadow-md';
-  const hoverWrongClass = 'hover:bg-[#D7FF86]';
+  const hoverWrongClass = 'hover:bg-[#FF8686]';
 
 
   let content;
@@ -271,6 +274,12 @@ function TestCaseViewer({
                 </p>
               </div>
             ))}
+            <div className="mt-2">
+              <h4 className="text-sm text-gray-400">정답</h4>
+              <p className="bg-gray-400 py-2 px-2 rounded-lg">
+                {typeof output.current[selectedTestCase] === 'object' ? JSON.stringify(output.current[selectedTestCase]) : output.current[selectedTestCase]}
+              </p>
+            </div>
           </div>
         </>
       );
