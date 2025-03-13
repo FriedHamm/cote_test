@@ -3,7 +3,7 @@ import SubmissionDetail from "@/app/problem/[problemId]/submission/SubmissionDet
 
 export default function Submission(props) {
   return (
-    <div className="px-4 h-full">
+    <div className="px-4 h-full overflow-y-scroll">
       <SubmissionDetail/>
     </div>
   )

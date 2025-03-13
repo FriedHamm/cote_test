@@ -13,17 +13,17 @@ export default function ProfilePage() {
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <PasswordResetModal open={passwordResetModalOpen} setOpen={setPasswordResetModalOpen}/>
       <AccountDeletionModal open={accountDeletionModalOpen} setOpen={setAccountDeletionModalOpen}/>
-      <div className="px-4 sm:px-0">
+      <div className="">
         <h3 className="text-base/7 font-semibold text-gray-900">계정 관리</h3>
       </div>
       <div className="mt-6 border-t border-gray-100 divide-y divide-gray-200">
         <dl>
-          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4">
             <dt className="text-sm/6 font-medium text-gray-900">이메일</dt>
             <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{email}</dd>
           </div>
         </dl>
-        <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+        <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 ">
           <h4 className="text-sm/6 font-medium text-gray-900">비밀번호 변경</h4>
           <button
             type="button"
@@ -33,7 +33,7 @@ export default function ProfilePage() {
             비밀번호 변경하기
           </button>
         </div>
-        <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+        <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4">
           <h4 className="text-sm/6 font-medium text-gray-900">계정 탈퇴</h4>
           {/*<p className="mt-1 text-sm/6 text-gray-700 sm:mt-0">계정 탈퇴 시 프로필 및 응시한 테스트 정보가 삭제 됩니다.</p>*/}
           <button

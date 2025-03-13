@@ -4,43 +4,7 @@ import {ProblemContext} from "@/app/problem/ProblemContent";
 import {resultMappingObject} from "@/app/problem/Console";
 import CodeEditor from "@/app/problem/CodeEditor";
 
-// const submitResult = {
-//   "id": 4,
-//   "user_id": 70,
-//   "problem_id": 1,
-//   "language_id": 2,
-//   "final_result": "SOL",
-//   "submitted_code": "# 2. 메모이제이션\ndef solution(m, n):\n    a=1/(m-n)\n    memo = [[-1] * n for _ in range(m)]\n\n    def dp(r, c):\n        # basecase\n        if r == 0 or c == 0:\n            memo[r][c] = 1\n        # memoization\n        elif memo[r][c] == -1:\n            memo[r][c] = dp(r - 1, c) + dp(r, c - 1)\n        # 저장된 값 반환\n        return memo[r][c]\n\n    return dp(m - 1, n - 1)",
-//   "result_detail": {
-//     "max_run_time": 0,
-//     "max_memory": 12056,
-//     "1": {
-//       "message": "WRO",
-//       "result": 28,
-//       "run_time": 0,
-//       "memory": 12056,
-//       "stdout": "",
-//       "stderr": null // 여기에 에러 내용이 문자열로 들어감
-//     },
-//     "2": {
-//       "message": "SOL",
-//       "result": 3,
-//       "run_time": 0,
-//       "memory": 12056,
-//       "stdout": "",
-//       "stderr": null
-//     },
-//     "3": {
-//       "message": "SOL",
-//       "result": 1,
-//       "run_time": 0,
-//       "memory": 12056,
-//       "stdout": "",
-//       "stderr": null
-//     }
-//   },
-//   "submitted_at": "2025-03-10T15:56:50.666871"
-// }
+
 
 export default function SubmissionDetail() {
   const {submitResult} = useContext(ProblemContext);
@@ -55,14 +19,13 @@ export default function SubmissionDetail() {
   const isoString = "2025-03-10T15:56:50.666871";
 
 // 문자열을 Date 객체로 변환
-  const date = new Date(isoString);
+  const date = new Date(submitResult.submitted_at);
 
 // 월은 0부터 시작하므로 +1 해줘야 함
   const formattedDate = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 ${date.getHours()}시 ${date.getMinutes()}분 ${date.getSeconds()}초`;
-  console.log(formattedDate);
 
   return (
-    <div className="w-full mt-4 px-4 sm:px-6 lg:px-8">
+    <div className="w-full my-4 px-4 sm:px-6 lg:px-8">
 
       <div className="mb-4 p-4 bg-gray-50 rounded-lg shadow text-center">
         <p className={`text-2xl font-semibold ${

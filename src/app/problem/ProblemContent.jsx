@@ -36,7 +36,6 @@ export default function ProblemContent({children, problemDetail, initCode = {}, 
     }
     try {
       const response = await api.post(`cote/v1/submissions?type=run`, data);
-      console.log('실행 결과임', response.data);
       return response.data;
     } catch (error) {
       if (error.response || error.request) {
@@ -56,7 +55,6 @@ export default function ProblemContent({children, problemDetail, initCode = {}, 
     }
     try {
       const response = await api.post(`cote/v1/submissions?type=submit`, data);
-      console.log('제출 결과임', response.data);
       return response.data;
     } catch (error) {
       if (error.response || error.request) {

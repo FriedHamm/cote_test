@@ -26,7 +26,7 @@ export default function UserLayout({children}) {
   return (
     <div>
       <div className="bg-[#FFFAF0] flex flex-col lg:flex-row min-h-screen pt-20">
-        <MobileNav/>
+        {/*<MobileNav/>*/}
         <div className="hidden lg:z-50 lg:flex lg:w-72 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 px-6">
@@ -54,26 +54,26 @@ export default function UserLayout({children}) {
                     ))}
                   </ul>
                 </li>
-                <li>
-                  <div className="text-xs/6 font-semibold text-gray-400">코딩테스트</div>
-                  <ul role="list" className="-mx-2 mt-2 space-y-1">
-                    {codingtest.map((team) => (
-                      <li key={team.name}>
-                        <Link
-                          href={team.href}
-                          className={classNames(
-                            team.current
-                              ? 'bg-gray-50 text-indigo-600'
-                              : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600',
-                            'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
-                          )}
-                        >
-                          <span className="truncate">{team.name}</span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </li>
+                {/*<li>*/}
+                {/*  <div className="text-xs/6 font-semibold text-gray-400">코딩테스트</div>*/}
+                {/*  <ul role="list" className="-mx-2 mt-2 space-y-1">*/}
+                {/*    {codingtest.map((team) => (*/}
+                {/*      <li key={team.name}>*/}
+                {/*        <Link*/}
+                {/*          href={team.href}*/}
+                {/*          className={classNames(*/}
+                {/*            team.current*/}
+                {/*              ? 'bg-gray-50 text-indigo-600'*/}
+                {/*              : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600',*/}
+                {/*            'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',*/}
+                {/*          )}*/}
+                {/*        >*/}
+                {/*          <span className="truncate">{team.name}</span>*/}
+                {/*        </Link>*/}
+                {/*      </li>*/}
+                {/*    ))}*/}
+                {/*  </ul>*/}
+                {/*</li>*/}
               </ul>
             </nav>
           </div>
