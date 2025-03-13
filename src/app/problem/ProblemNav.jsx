@@ -36,7 +36,7 @@ export default function ProblemNav() {
   ];
 
   if (isLoggedIn) {
-    navItems.push({ tab: "submission", label: "제출 내역", icon: MdHistory });
+    navItems.push({ tab: "submission", label: "제출 결과", icon: MdHistory });
   }
 
   return (

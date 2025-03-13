@@ -41,6 +41,7 @@ export default function Console() {
   } = useContext(ConsoleContext);
   const dispatch = useDispatch();
   const {onRunClick, onSubmitClick, setSubmitResult, setRunResult} = useContext(ProblemContext);
+  const router = useRouter();
 
   const curSelectedTestCase = selectedConsoleTab === 0 ? selectedTestCase : selectedTestResult;
 
@@ -62,7 +63,8 @@ export default function Console() {
     setIsSubmitLoading(true);
     try {
       const response = await onSubmitClick();
-      setSubmitResult(response.data);
+      setSubmitResult(response);
+      router.push('submission')
     } catch (error) {
       dispatch(addAlert({type: 'warning', message: error.message}))
     } finally {
@@ -160,12 +162,14 @@ function RunSubmitButtonContainer({
 // WRO, SOL TLE, MEM, RTE, SYS
 // WRO하고 SOL만 정상 랜더링 나머지는..
 
-const resultMappingObject = {
+export const resultMappingObject = {
   TLE: '시간 초과',
   MEM: '메모리 초과',
   RTE: '런타임 에러',
   SYS: '시스템 에러',
-  CPE: '컴파일 에러'
+  CPE: '컴파일 에러',
+  SOL: '정답',
+  WRO: '오답'
 }
 
 function TestCaseViewer({
@@ -233,7 +237,7 @@ function TestCaseViewer({
           {convertedRunTestCase.current[selectedTestCase].input.map((input, index) => (
             <div className="mt-2" key={index}>
               <h4 className="text-sm text-gray-400">{input.key}</h4>
-              <p className="bg-gray-400 py-2 px-2 rounded-lg">
+              <p className="bg-gray-300 py-2 px-2 rounded-lg">
                 {typeof input.value === 'object' ? JSON.stringify(input.value) : input.value}
               </p>
             </div>
@@ -269,15 +273,21 @@ function TestCaseViewer({
             {convertedRunTestCase.current[selectedTestCase].input.map((input, index) => (
               <div className="mt-2" key={index}>
                 <h4 className="text-sm text-gray-400">{input.key}</h4>
-                <p className="bg-gray-400 py-2 px-2 rounded-lg">
+                <p className="bg-gray-300 py-2 px-2 rounded-lg">
                   {typeof input.value === 'object' ? JSON.stringify(input.value) : input.value}
                 </p>
               </div>
             ))}
             <div className="mt-2">
-              <h4 className="text-sm text-gray-400">정답</h4>
-              <p className="bg-gray-400 py-2 px-2 rounded-lg">
+              <h4 className="text-sm text-gray-400">기대값</h4>
+              <p className="bg-gray-300 py-2 px-2 rounded-lg">
                 {typeof output.current[selectedTestCase] === 'object' ? JSON.stringify(output.current[selectedTestCase]) : output.current[selectedTestCase]}
+              </p>
+            </div>
+            <div className="mt-2">
+              <h4 className="text-sm text-gray-400">출력값</h4>
+              <p className="bg-gray-300 py-2 px-2 rounded-lg">
+                {typeof formattedTestResults[selectedTestCase].result === 'object' ? JSON.stringify(formattedTestResults[selectedTestCase].result) : formattedTestResults[selectedTestCase].result}
               </p>
             </div>
           </div>

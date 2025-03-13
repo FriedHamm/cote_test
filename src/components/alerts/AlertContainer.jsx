@@ -15,9 +15,8 @@ export default function AlertContainer() {
   if (!alerts.length) return null
 
   return (
-    <div className="fixed top-24 left-1/2 transform -translate-x-1/2 z-50 w-full px-8 sm:px-4 max-w-sm
-    sm:max-w-md
-    md:max-w-lg z-50 flex flex-col gap-4">
+    <div className="fixed top-24 left-1/2 transform -translate-x-1/2 z-50 w-full px-8 sm:px-4 max-w-full
+    z-50 flex flex-col gap-4">
       {alerts.map((alert) => {
         let AlertComponent
         switch (alert.type) {

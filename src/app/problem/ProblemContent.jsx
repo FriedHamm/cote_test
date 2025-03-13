@@ -24,6 +24,8 @@ export default function ProblemContent({children, problemDetail, initCode = {}, 
   const [submitResult, setSubmitResult] = useState(null);
   const [runResult, setRunResult] = useState(null);
 
+  console.log(submitResult);
+
 
   const handleRunClick = async () => {
 

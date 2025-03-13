@@ -24,7 +24,7 @@ const disableAutocomplete = autocompletion({
   ]
 });
 
-const CodeEditor = forwardRef(({curLanguage = 'JavaScript', curCode = '', setCurCode = () => {}}, ref) => {
+const CodeEditor = forwardRef(({editable = true, curLanguage = 'JavaScript', curCode = '', setCurCode = () => {}}, ref) => {
   // templateCode와 현재 사용중인 언어의 CodeMirror extension 상태
   const languageExtension = languageExtensions[curLanguage];
   const editorRef = useRef(null);
@@ -48,7 +48,7 @@ const CodeEditor = forwardRef(({curLanguage = 'JavaScript', curCode = '', setCur
       className="overflow-y-scroll flex-grow"
       value={curCode}
       onChange={handleCodeChange}
-      editable={true}
+      editable={editable}
       readOnly={false}
       indentWithTab={true}
       basicSetup={{
