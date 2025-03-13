@@ -50,6 +50,7 @@ export default function Console() {
     setIsRunLoading(true);
     try {
       const response = await onRunClick();
+      console.log('실행 결과임', response);
       setRunResult(response);
       setSelectedConsoleTab(1);
       setSelectedTestResult(0);
@@ -64,6 +65,7 @@ export default function Console() {
     setIsSubmitLoading(true);
     try {
       const response = await onSubmitClick();
+      console.log('제출 결과임', response);
       setSubmitResult(response);
       router.push('submission')
     } catch (error) {
