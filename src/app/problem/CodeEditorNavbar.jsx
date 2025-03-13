@@ -1,8 +1,9 @@
-import { useRef, useState, useEffect } from 'react';
+import {useRef, useState, useEffect, useContext} from 'react';
 import { createPortal } from 'react-dom';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
 import { ChevronUpDownIcon } from '@heroicons/react/16/solid';
 import { CheckIcon } from '@heroicons/react/20/solid';
+import {ProblemContext} from "@/app/problem/ProblemContent";
 
 // const languages = ['JavaScript', 'C++', 'C', 'Python', 'Java'];
 
@@ -23,10 +24,11 @@ function Tooltip({ children, targetRect }) {
   );
 }
 
-export default function CodeEditorNavbar({ languages = [], curLanguage = 'JavaScript', onLanguageChange: handleLanguageChange }) {
+export default function CodeEditorNavbar({ curLanguage = 'JavaScript', onLanguageChange: handleLanguageChange, onResetClick:handleResetClick }) {
   const [showTooltip, setShowTooltip] = useState(false);
   const [buttonRect, setButtonRect] = useState(null);
   const buttonRef = useRef(null);
+  const {languages} = useContext(ProblemContext);
 
   // 버튼의 위치를 가져와 tooltip의 위치를 업데이트
   useEffect(() => {
@@ -77,6 +79,7 @@ export default function CodeEditorNavbar({ languages = [], curLanguage = 'JavaSc
         ref={buttonRef}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onClick={handleResetClick}
       >
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
           <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"/>

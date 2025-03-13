@@ -40,6 +40,18 @@ const CodeEditor = forwardRef(({editable = true, curLanguage = 'JavaScript', cur
         editorRef.current.view.focus();
       }
     },
+    setCode(code) {
+      console.log(editorRef.current.view.state.doc.toString())
+      if (editorRef.current && editorRef.current.view) {
+
+        editorRef.current.view.dispatch({
+          changes: { from: 0, to: editorRef.current.view.state.doc.length, insert: code }
+        });
+      }
+      console.log(editorRef.current.view.state.doc.toString())
+      console.log(editorRef.current.view.state.doc.length)
+      setCurCode(code);
+    }
   }));
 
   return (

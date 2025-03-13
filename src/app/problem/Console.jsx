@@ -5,6 +5,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useRouter} from "next/navigation";
 import {addAlert} from "@/store/slices/alertSlice";
 import {ConsoleContext} from "@/app/problem/ConsoleContext";
+import {CodeExecutionContext} from "@/app/problem/CodeExcutionContext";
 
 const testTestCases = [
   {
@@ -40,7 +41,7 @@ export default function Console() {
     setIsSubmitLoading
   } = useContext(ConsoleContext);
   const dispatch = useDispatch();
-  const {onRunClick, onSubmitClick, setSubmitResult, setRunResult} = useContext(ProblemContext);
+  const {onRunClick, onSubmitClick, setSubmitResult, setRunResult} = useContext(CodeExecutionContext);
   const router = useRouter();
 
   const curSelectedTestCase = selectedConsoleTab === 0 ? selectedTestCase : selectedTestResult;
@@ -178,7 +179,8 @@ function TestCaseViewer({
                           selectedTestCase,
                           onSelectedTestCaseChange: handleSelectedTestCaseChange
                         }) {
-  const {runTestCase, runResult} = useContext(ProblemContext);
+  const {runTestCase} = useContext(ProblemContext);
+  const {runResult} = useContext(CodeExecutionContext)
 
   const convertedRunTestCase = useRef(
     Object.entries(runTestCase).map(
@@ -290,12 +292,14 @@ function TestCaseViewer({
                 {typeof formattedTestResults[selectedTestCase].result === 'object' ? JSON.stringify(formattedTestResults[selectedTestCase].result) : formattedTestResults[selectedTestCase].result}
               </p>
             </div>
-            <div className="mt-2">
-              <h4 className="text-sm text-gray-400">출력</h4>
-              <p className="bg-gray-300 py-2 px-2 rounded-lg">
-                {typeof formattedTestResults[selectedTestCase].stdout === 'object' ? JSON.stringify(formattedTestResults[selectedTestCase].stdout) : formattedTestResults[selectedTestCase].stdout}
-              </p>
-            </div>
+            {formattedTestResults[selectedTestCase].stdout &&
+              <div className="mt-2">
+                <h4 className="text-sm text-gray-400">출력</h4>
+                <p className="bg-gray-300 py-2 px-2 rounded-lg">
+                  {typeof formattedTestResults[selectedTestCase].stdout === 'object' ? JSON.stringify(formattedTestResults[selectedTestCase].stdout) : formattedTestResults[selectedTestCase].stdout}
+                </p>
+              </div>
+            }
           </div>
 
         </>

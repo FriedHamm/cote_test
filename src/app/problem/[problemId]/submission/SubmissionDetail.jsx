@@ -1,13 +1,13 @@
 'use client'
 import {useContext} from "react";
-import {ProblemContext} from "@/app/problem/ProblemContent";
 import {resultMappingObject} from "@/app/problem/Console";
 import CodeEditor from "@/app/problem/CodeEditor";
+import {CodeExecutionContext} from "@/app/problem/CodeExcutionContext";
 
 
 
 export default function SubmissionDetail() {
-  const {submitResult} = useContext(ProblemContext);
+  const {submitResult} = useContext(CodeExecutionContext);
 
   if (!submitResult) {
     return (
@@ -15,8 +15,7 @@ export default function SubmissionDetail() {
     )
   }
 
-  // ISO 8601 형식의 문자열
-  const isoString = "2025-03-10T15:56:50.666871";
+
 
 // 문자열을 Date 객체로 변환
   const date = new Date(submitResult.submitted_at);
