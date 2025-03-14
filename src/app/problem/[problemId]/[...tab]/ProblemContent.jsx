@@ -1,19 +1,26 @@
 'use client'
 import {Panel, PanelGroup, PanelResizeHandle} from "react-resizable-panels";
 import ProblemNav from "@/app/problem/ProblemNav";
-import {createContext, memo, useContext, useRef, useState} from "react";
+import {createContext, memo,  useRef, useState} from "react";
 import CodeEditor from "@/app/problem/CodeEditor";
 import CodeEditorNavbar from "@/app/problem/CodeEditorNavbar";
 import Console from "@/app/problem/Console";
 import {ConsoleProvider} from "@/app/problem/ConsoleContext";
 import {CodeExecutionProvider} from "@/app/problem/CodeExcutionContext";
+import dynamic from "next/dynamic";
+import {usePathname} from "next/navigation";
 
 export const ProblemContext = createContext(null);
 
 // initCode의 형태는
 // {language: {language, languageId, code}}
 
+const Description = dynamic(() => import("@/app/problem/[problemId]/Description"));
+const SubmissionResult = dynamic(() => import("@/app/problem/[problemId]/SubmissionResult"));
+
 export default function ProblemContent({children, problemDetail, initCode = {}, title}) {
+  const pathname = usePathname();
+  const curTab = pathname.split("/").pop();
   const languages = useRef(Object.keys(initCode)); // EditorNav에서 사용함
   const codes = useRef(JSON.parse(JSON.stringify(initCode)));
   const [curLanguage, setCurLanguage] = useState(languages.current[0]); // setCurLanguage는 EditorNav에서 사용
@@ -40,6 +47,16 @@ export default function ProblemContent({children, problemDetail, initCode = {}, 
     setCurCode(codes.current[language].code);
   }
 
+  let CurTabComponent;
+
+  if (curTab === 'description') {
+    CurTabComponent = <Description/>;
+  } else if (curTab === 'submission-result') {
+    CurTabComponent = <SubmissionResult/>;
+  } else {
+    CurTabComponent = <Description/>;
+  }
+
   return (
     <ProblemContext.Provider value={{
       languages: languages.current,
@@ -53,11 +70,11 @@ export default function ProblemContent({children, problemDetail, initCode = {}, 
         <CodeExecutionProvider curLanguage={curLanguage} codes={codes} problemId={problemDetail?.problem_id}>
           {/*{여긴 데스크톱}*/}
           <DesktopView curLanguage={curLanguage} curCode={curCode} handleResetClick={handleResetClick} handleLanguageChange={handleLanguageChange} handleCodeChange={handleCodeChange}>
-            {children}
+            {CurTabComponent}
           </DesktopView>
 
           <MobileView curLanguage={curLanguage} curCode={curCode} handleResetClick={handleResetClick} handleLanguageChange={handleLanguageChange} handleCodeChange={handleCodeChange}>
-            {children}
+            {CurTabComponent}
           </MobileView>
         </CodeExecutionProvider>
       </ConsoleProvider>

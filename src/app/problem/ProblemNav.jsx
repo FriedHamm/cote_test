@@ -12,20 +12,15 @@ import {useSelector} from "react-redux";
 export default function ProblemNav() {
   const {isLoggedIn} = useSelector(state => state.auth);
   const pathname = usePathname();
-  const [curTab, setCurTab] = useState(pathname.split('/')[3]);
+  const curTab = pathname.split('/').pop();
   const router = useRouter();
   const { problemId } = useParams();
 
   // 탭 전환 함수: 현재 탭과 동일하면 아무 동작 없이 리턴, 아니면 상태 변경 후 페이지 이동
   const handleNavigation = (tab) => {
     if (curTab === tab) return;
-    setCurTab(tab);
-    router.push(`/problem/${problemId}/${tab}`);
+    router.push(`/problem/${problemId}/${tab}`, undefined, {shallow: true});
   };
-
-  useEffect(() => {
-    setCurTab(pathname.split('/')[3]);
-  }, [pathname]);
 
   // 각 버튼에 필요한 정보를 배열로 정의
   const navItems = [
@@ -36,7 +31,7 @@ export default function ProblemNav() {
   ];
 
   if (isLoggedIn) {
-    navItems.push({ tab: "submission", label: "제출 결과", icon: MdHistory });
+    navItems.push({ tab: "submission-result", label: "제출 결과", icon: MdHistory });
   }
 
   return (

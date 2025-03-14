@@ -9,6 +9,7 @@ export default function ErrorGuard({errorMessage = [], redirectUrl='/'}) {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log('실행이 되긴 한거냐?');
     router.push(redirectUrl);
     errorMessage.forEach((error) => {
       dispatch(addAlert({type: 'warning', message: error}));

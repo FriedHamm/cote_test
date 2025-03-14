@@ -1,6 +1,6 @@
-import {fetchInitCode, fetchLanguage, fetchProblemDetail} from "@/app/problem/[problemId]/layout";
 import ErrorGuard from "@/components/ErrorGuard";
 import ProblemEditFormClient from "@/app/admin/problems/[problemId]/edit/ProblemEditForm";
+import {fetchInitCode, fetchLanguage, fetchProblemDetail} from "@/app/problem/[problemId]/[...tab]/page";
 
 export default async function ProblemEditPage({params}) {
   const {problemId} = await params;

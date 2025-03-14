@@ -3,7 +3,8 @@ import { createPortal } from 'react-dom';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
 import { ChevronUpDownIcon } from '@heroicons/react/16/solid';
 import { CheckIcon } from '@heroicons/react/20/solid';
-import {ProblemContext} from "@/app/problem/ProblemContent";
+import {ProblemContext} from "@/app/problem/[problemId]/[...tab]/ProblemContent";
+
 
 // const languages = ['JavaScript', 'C++', 'C', 'Python', 'Java'];
 

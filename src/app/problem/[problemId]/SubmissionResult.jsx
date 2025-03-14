@@ -1,12 +1,18 @@
-'use client'
+'use client';
 import {useContext} from "react";
+import {CodeExecutionContext} from "@/app/problem/CodeExcutionContext";
 import {resultMappingObject} from "@/app/problem/Console";
 import CodeEditor from "@/app/problem/CodeEditor";
-import {CodeExecutionContext} from "@/app/problem/CodeExcutionContext";
 
+export default function SubmissionResult(props) {
+  return (
+    <div className="px-4 h-full overflow-y-scroll">
+      <SubmissionDetail/>
+    </div>
+  )
+}
 
-
-export default function SubmissionDetail() {
+function SubmissionDetail() {
   const {submitResult} = useContext(CodeExecutionContext);
 
   if (!submitResult) {
@@ -53,13 +59,3 @@ export default function SubmissionDetail() {
     </div>
   )
 }
-
-// 일단 필요한건
-// 언어 정보
-// 최종 결과
-// 제출 코드
-// 런타임
-// 메모리
-// 제출 일시
-
-// SOL과 WRO일 때에만 런타임 메모리를 보여줌

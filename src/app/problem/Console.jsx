@@ -1,11 +1,11 @@
 'use client'
 import {useContext, useMemo, useRef, useState} from "react";
-import {ProblemContext} from "@/app/problem/ProblemContent";
 import {useDispatch, useSelector} from "react-redux";
 import {useRouter} from "next/navigation";
 import {addAlert} from "@/store/slices/alertSlice";
 import {ConsoleContext} from "@/app/problem/ConsoleContext";
 import {CodeExecutionContext} from "@/app/problem/CodeExcutionContext";
+import {ProblemContext} from "@/app/problem/[problemId]/[...tab]/ProblemContent";
 
 const testTestCases = [
   {
