@@ -271,9 +271,11 @@ function LanguageItem({language, formattedLanguage, index}) {
   const [height, setHeight] = useState(0);
   const contentRef = useRef(null);
   const initcodeArray = useWatch({control, name: "initcode"}) || [];
+  console.log("initcodeArray", initcodeArray);
   useEffect(() => {
     // 전체 initcode 배열에서 props.language와 일치하는 항목이 있는지 확인
     const found = initcodeArray.find(item => item.language === language && item.template_code);
+    console.log('여기는', language, found);
     if (found) {
       setToggleEnabled(true);
 
