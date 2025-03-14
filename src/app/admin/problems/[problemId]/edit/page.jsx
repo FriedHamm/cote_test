@@ -27,6 +27,9 @@ export default async function ProblemEditPage({params}) {
     errorMessage.push(error.message);
   }
 
+  console.log('여기는 에딧', languages);
+  console.log('여기는 에딧', initCode);
+
   if (errorMessage.length) {
     return <ErrorGuard errorMessage={errorMessage} redirectUrl={`/problems/1`}/>;
   }

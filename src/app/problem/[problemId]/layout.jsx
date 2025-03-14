@@ -110,6 +110,8 @@ export default async function ProblemLayout({params, children}) {
   }
 
   const formattedLanguage = formatLanguages(languages);
+  console.log('여기는 레이아웃', languages)
+  console.log('여기는 레이아웃', initCode)
 
   const codeMapping = {};
   formattedLanguage.forEach(lang => {

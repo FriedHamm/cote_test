@@ -18,6 +18,7 @@ export default function ProblemContent({children, problemDetail, initCode = {}, 
   const codes = useRef(JSON.parse(JSON.stringify(initCode)));
   const [curLanguage, setCurLanguage] = useState(languages.current[0]); // setCurLanguage는 EditorNav에서 사용
   const [curCode, setCurCode] = useState(codes?.current?.[curLanguage]?.code);
+  console.log(codes);
 
   const handleResetClick = () => {
     codes.current[curLanguage].code = initCode[curLanguage].code;
