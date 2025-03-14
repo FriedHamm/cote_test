@@ -82,13 +82,13 @@ export default async function ProblemEditPage({params}) {
     initcode: initCode
   };
 
-  console.log(defaultValue);
+  const languageInfo = initCode.map(item => item.language);
 
   return (
     <ProblemEditFormClient
       defaultValue={defaultValue}
       problemId={problemId}
-      initCode={initCode}
+      languages={languageInfo}
     />
   );
 }

@@ -5,7 +5,7 @@ import ProblemForm from "@/app/admin/problems/ProblemForm";
 export default function ProblemEditFormClient({
                                                 defaultValue,
                                                 problemId,
-                                                initCode
+                                                languages = []
                                               }) {
   const formMethods = useForm({
     shouldUnregister: true,
@@ -13,7 +13,7 @@ export default function ProblemEditFormClient({
     defaultValues: defaultValue
   });
 
-  const values = {...formMethods, initCode}
+  const values = {...formMethods, languages}
 
   return (
     <FormProvider {...values} >
