@@ -272,16 +272,14 @@ function LanguageItem({language, formattedLanguage, index}) {
   const contentRef = useRef(null);
 
   const initcodeArray = getValues("initcode") || [];
-  console.log("initcodeArray", initcodeArray);
   useEffect(() => {
     // 전체 initcode 배열에서 props.language와 일치하는 항목이 있는지 확인
     const found = initcodeArray.find(item => item.language === language && item.template_code);
-    console.log('여기는', language, found)
     if (found) {
       setToggleEnabled(true);
 
     }
-  }, []);
+  }, [initcodeArray]);
 
   // 토글 on이면 바로 isMounted를 true로 만들어 DOM에 렌더링
   useLayoutEffect(() => {
