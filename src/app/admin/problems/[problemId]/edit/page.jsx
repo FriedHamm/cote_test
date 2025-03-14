@@ -31,13 +31,14 @@ export default async function ProblemEditPage({params}) {
     return <ErrorGuard errorMessage={errorMessage} redirectUrl={`/problems/1`}/>;
   }
 
-  initCode = initCode.map(code => {
-    const langData = languages.find(lang => lang.id === code.language_id);
-    // language 키가 있거나 name 키가 있는지 확인합니다.
-    const languageName = langData?.language;
+  console.log(languages);
+  console.log(initCode)
+
+  initCode = languages.map(lang => {
+    const found = initCode.find(code => code.language_id === lang.id);
     return {
-      language: languageName,
-      template_code: code.template_code
+      language: lang.language || '',
+      template_code: found?.template_code || ''
     };
   });
 
@@ -81,6 +82,11 @@ export default async function ProblemEditPage({params}) {
     submit_testcase,
     initcode: initCode
   };
+
+  console.log(languages);
+  console.log(initCode);
+
+
 
   const languageInfo = initCode.map(item => item.language);
 
