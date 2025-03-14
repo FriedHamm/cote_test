@@ -30,6 +30,7 @@ const testLanguages = [
   }
 ]
 
+
 export default function ProblemCreationPage() {
   const method = useForm(
     {
@@ -45,6 +46,12 @@ export default function ProblemCreationPage() {
   )
 }
 
+// 기본 메모리 설정?..
+
+
+// 분리를 해야하는데
+// api를 받아야 하고..
+// 음... method 부분에서 셋팅을 해야할듯
 function ProblemCreationForm() {
   const {control, register, handleSubmit, formState: {errors}, reset, setValue} = useFormContext();
 
@@ -53,15 +60,22 @@ function ProblemCreationForm() {
   const dispatch = useDispatch();
 
   const onSubmit = async form => {
+
+    console.log(form);
     // initcode의 경우에는 form에서 배열 형태로 관리되기 때문에, 필터링을 거쳐서 제대로된 배열로 수정함. template_code랑 language가 모두 작성되어 있어야 함.
-    const initcode = form.initcode ? form.initcode.filter(item => item && item.template_code && item.language) : [];
-    if (!initcode.length) {
-      dispatch(addAlert({type: 'warning', message: "최소 한 언어에 대한 템플릿 코드를 작성해야 합니다."}));
-      return;
-    }
-    // maxconstraint도 마찬가지임. 하나의 필드라도 입력하지 않았다면 maxconstraint에 들어가지 않음
-    const maxconstraint = form.maxconstraint ? form.maxconstraint.filter(item => item && item.language && item.max_run_time && item.max_memory) : [];
-    if (!maxconstraint.length) {
+    // const initcode = form.initcode ? form.initcode.filter(item => item && item.template_code && item.language) : [];
+    // if (!initcode.length) {
+    //   dispatch(addAlert({type: 'warning', message: "최소 한 언어에 대한 템플릿 코드를 작성해야 합니다."}));
+    //   return;
+    // }
+    // // maxconstraint도 마찬가지임. 하나의 필드라도 입력하지 않았다면 maxconstraint에 들어가지 않음
+    const maxconstraint = form.maxconstraint?.map(({language, max_run_time, max_memory}) => {
+      return {language, max_run_time, max_memory: max_memory * 1024}
+    })
+
+    console.log(maxconstraint)
+
+    if (!maxconstraint) {
       dispatch(addAlert({type: 'warning', message: "제한사항을 입력해야 합니다."}));
       return;
     }
@@ -137,7 +151,6 @@ function ProblemCreationForm() {
       apply_db_constraints: true,
       tags: []
     };
-    console.log('로그', finalForm);
 
     try {
       const response = await api.post('administrator/v1/cote/problems', finalForm);
@@ -389,6 +402,13 @@ function ToggleButton({enabled, setEnabled}) {
 }
 
 function MaxConstraintItem({formattedLanguage, language, index}) {
+  const {setValue} = useFormContext();
+
+  useEffect(() => {
+    setValue(`maxconstraint[${index}].max_run_time`, 1000);
+    setValue(`maxconstraint[${index}].max_memory`, 200);
+  },[]);
+
   const {register} = useFormContext();
   return (
     <fieldset>
@@ -402,7 +422,11 @@ function MaxConstraintItem({formattedLanguage, language, index}) {
         시간 제한:
         <input
           type="number"
-          {...register(`maxconstraint[${index}].max_run_time`, {valueAsNumber: true, required: true})}
+          {...register(`maxconstraint[${index}].max_run_time`,
+            {
+              valueAsNumber: true,
+              required: true,
+            })}
           placeholder="단위는 ms 입니다."
         />
       </label>
@@ -410,8 +434,12 @@ function MaxConstraintItem({formattedLanguage, language, index}) {
         메모리 제한:
         <input
           type="number"
-          {...register(`maxconstraint[${index}].max_memory`, {valueAsNumber: true, required: true})}
-          placeholder="단위는 kb 입니다."
+          {...register(`maxconstraint[${index}].max_memory`,
+            {
+              valueAsNumber: true,
+              required: true,
+            })}
+          placeholder="단위는 mb 입니다."
         />
       </label>
     </fieldset>
@@ -531,7 +559,7 @@ function JsonFileUpload({fieldName}) {
                   d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z"/>
           </svg>
           <div className="mt-4 flex text-sm/6 text-gray-600">
-          <label
+            <label
               htmlFor={`file-upload-${fieldName}`}
               className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
             >
