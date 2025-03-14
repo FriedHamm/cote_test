@@ -18,7 +18,7 @@ export default function ProblemEditFormClient({
   return (
     <FormProvider {...values} >
       <ProblemForm
-        endpoint={`/administrator/v1/cote/problem${problemId}`}
+        endpoint={`/administrator/v1/cote/problems/${problemId}`}
         method={'put'}
         successMessage={'문제가 정상적으로 수정되었습니다.'}
         // initCode={initCode}

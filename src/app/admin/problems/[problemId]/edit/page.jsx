@@ -45,22 +45,33 @@ export default async function ProblemEditPage({params}) {
     return {name: key}
   });
 
-  // run_testcase.${index}.input.${varIndex} // index는 테케 varIndex는 변수
-  const run_testcase = Object.values(problemDetail.problemDetail.run_testcase).map(({input, output}, index) => {
-    const inputObj = Object.values(input);
-    return {
-      input: inputObj,
-      output
-    }
-  })
+  // 첫 번째 테스트케이스의 input 키 순서를 가져옵니다.
+  const variableKeys = Object.keys(problemDetail.problemDetail.run_testcase['1'].input);
 
-  const submit_testcase = Object.values(problemDetail.problemDetail.submit_testcase).map(({input, output}, index) => {
-    const inputObj = Object.values(input);
-    return {
-      input: inputObj,
-      output
+// run_testcase 배열 생성
+  const run_testcase = Object.values(problemDetail.problemDetail.run_testcase).map((testCase, i) => {
+    const inputArray = [];
+    // 각 변수 순서대로 input 값을 JSON 문자열로 변환
+    for (let varIndex = 0; varIndex < variableKeys.length; varIndex++) {
+      inputArray[varIndex] = JSON.stringify(testCase.input[variableKeys[varIndex]]);
     }
-  })
+    return {
+      input: inputArray,
+      output: JSON.stringify(testCase.output)
+    };
+  });
+
+// submit_testcase 배열 생성
+  const submit_testcase = Object.values(problemDetail.problemDetail.submit_testcase).map((testCase, i) => {
+    const inputArray = [];
+    for (let varIndex = 0; varIndex < variableKeys.length; varIndex++) {
+      inputArray[varIndex] = JSON.stringify(testCase.input[variableKeys[varIndex]]);
+    }
+    return {
+      input: inputArray,
+      output: JSON.stringify(testCase.output)
+    };
+  });
   const defaultValue = {
     title: problemDetail.title,
     description: problemDetail.problemDetail.description,

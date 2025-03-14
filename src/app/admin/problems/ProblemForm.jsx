@@ -131,6 +131,7 @@ export default function ProblemForm({endpoint, method, successMessage}) {
       }
     } catch (error) {
       if (error.response) {
+        console.log(error.response);
         if (error.status === 403 || error.status === 401) {
           dispatch(addAlert({type: 'warning', message: '권한 없는 유저입니다.'}))
           // 라우팅을 해야하긴 함. 근데 말이 안되는 상황임.. 여기까지 어떻게 접근?..
@@ -161,8 +162,7 @@ export default function ProblemForm({endpoint, method, successMessage}) {
     }
     fetchLanguages();
   }, []);
-
-  console.log(getValues('description'))
+  
 
   useEffect(() => {
     // editorValue가 TextEditor의 현재 값 (예: 에디터 인스턴스에서 가져온 값)
@@ -272,7 +272,6 @@ function LanguageItem({language, formattedLanguage, index}) {
   const contentRef = useRef(null);
 
   const initcodeArray = getValues("initcode") || [];
-  console.log("initcodeArray", initcodeArray);
   useEffect(() => {
     // 전체 initcode 배열에서 props.language와 일치하는 항목이 있는지 확인
     const found = initcodeArray.find(item => item.language === language && item.template_code);
