@@ -40,7 +40,7 @@ export async function generateMetadata({ params }, parent) {
   };
 }
 
-async function fetchInitCode(problemId) {
+export async function fetchInitCode(problemId) {
   try {
     const response = await api.get(`/cote/v1/problems/${problemId}/initcodes`);
     return response.data;
@@ -53,11 +53,11 @@ async function fetchInitCode(problemId) {
   }
 }
 
-async function fetchProblemDetail(problemId) {
+export async function fetchProblemDetail(problemId) {
   try {
     const response = await api.get(`/cote/v1/problems/${problemId}?fields=all`);
 
-    return {title: response.data.title, problemDetail: response.data.problemdetail};
+    return {title: response.data.title, level: response.data.level, problemDetail: response.data.problemdetail};
   } catch (error) {
     if (error.response || error.request) {
       throw new Error(`문제 정보를 가져오는데 문제가 발생했습니다. ${error.status}`);
@@ -68,7 +68,7 @@ async function fetchProblemDetail(problemId) {
 }
 
 // 언어 정보 가져오기
-async function fetchLanguage() {
+export async function fetchLanguage() {
 
   try {
     const response = await api.get('/cote/v1/languages');

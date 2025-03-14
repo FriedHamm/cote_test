@@ -49,9 +49,10 @@ export default function ProblemsTable({ problemList }) {
               <colgroup>
                 {userRole === 'S' ? (
                   <>
-                    <col className="w-[55%] sm:w-[70%]"/>{/* 제목 */}
+                    <col className="w-[40%] sm:w-[60%]"/>{/* 제목 */}
                     <col className="w-[15%] sm:w-[10%]"/>{/* 난이도 */}
                     <col className="w-[15%] sm:w-[10%]"/>{/* 정답률 */}
+                    <col className="w-[15%] sm:w-[10%]"/>{/* 문제 삭제 */}
                     <col className="w-[15%] sm:w-[10%]"/>{/* 문제 삭제 */}
                   </>
                 ) : (
@@ -83,12 +84,20 @@ export default function ProblemsTable({ problemList }) {
                     정답률
                   </th>
                   {userRole === 'S' && (
-                    <th
-                      scope="col"
-                      className="sticky top-0 z-10 border-b border-gray-300 bg-white/75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
-                    >
-                      삭제
-                    </th>
+                    <>
+                      <th
+                        scope="col"
+                        className="sticky top-0 z-10 border-b border-gray-300 bg-white/75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
+                      >
+                        수정
+                      </th>
+                      <th
+                        scope="col"
+                        className="sticky top-0 z-10 border-b border-gray-300 bg-white/75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
+                      >
+                        삭제
+                      </th>
+                    </>
                   )}
                 </tr>
               </thead>
@@ -122,20 +131,35 @@ export default function ProblemsTable({ problemList }) {
                       {Math.trunc(problem.attempt_num / problem.solve_num) * 100 || 0}
                     </td>
                     {userRole === 'S' && (
-                      <td
-                        className={classNames(
-                          problemIdx !== problemList.length - 1 ? 'border-b border-gray-200' : '',
-                          'whitespace-nowrap px-3 py-4 text-sm text-gray-500'
-                        )}
-                      >
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(problem.id)}
-                          className="rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                      <>
+                        <td
+                          className={classNames(
+                            problemIdx !== problemList.length - 1 ? 'border-b border-gray-200' : '',
+                            'whitespace-nowrap px-3 py-4 text-sm text-gray-500'
+                          )}
                         >
-                          문제 삭제하기
-                        </button>
-                      </td>
+                          <Link
+                            href={`/admin/problems/${problem.id}/edit`}
+                            className="rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                          >
+                            문제 수정하기
+                          </Link>
+                        </td>
+                        <td
+                          className={classNames(
+                            problemIdx !== problemList.length - 1 ? 'border-b border-gray-200' : '',
+                            'whitespace-nowrap px-3 py-4 text-sm text-gray-500'
+                          )}
+                        >
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(problem.id)}
+                            className="rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                          >
+                            문제 삭제하기
+                          </button>
+                        </td>
+                      </>
                     )}
                   </tr>
                 ))}

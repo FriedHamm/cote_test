@@ -80,7 +80,7 @@ Heading.configure({
 })
 
 // errors는 react-hook-form에서만 사용되는 것임 일단은.. 포커스 용도로 쓰는 것. 그래서 보통은 undefined임
-const TextEditor = ({ className, placeholder, initValue, value, onChange: handleChange, error }) => {
+const TextEditor = ({ className, placeholder, value, onChange: handleChange, error }) => {
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -111,18 +111,11 @@ const TextEditor = ({ className, placeholder, initValue, value, onChange: handle
         class: `prose ${className}`,
       }
     },
-    content: initValue || '',
+    content: value || '',
     onUpdate: ({ editor }) => {
       handleChange(editor.getHTML());
     }
   })
-
-  useEffect(() => {
-    if (editor){
-      handleChange(initValue);
-      editor?.commands?.setContent(initValue)
-    }
-  }, [editor, initValue])
 
   useEffect(() => {
     if (error?.message) editor?.commands?.focus();
