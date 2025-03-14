@@ -270,8 +270,7 @@ function LanguageItem({language, formattedLanguage, index}) {
   const [hidden, setHidden] = useState(true); //
   const [height, setHeight] = useState(0);
   const contentRef = useRef(null);
-
-  const initcodeArray = getValues("initcode") || [];
+  const initcodeArray = useWatch({control, name: "initcode"}) || [];
   useEffect(() => {
     // 전체 initcode 배열에서 props.language와 일치하는 항목이 있는지 확인
     const found = initcodeArray.find(item => item.language === language && item.template_code);
