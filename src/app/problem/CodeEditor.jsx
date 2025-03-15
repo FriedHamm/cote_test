@@ -7,6 +7,7 @@ import {java} from "@codemirror/lang-java";
 import {solarizedLight, solarizedDark, solarizedLightStyle} from "@uiw/codemirror-themes-all";
 import {autocompletion} from "@codemirror/autocomplete";
 import {forwardRef, useImperativeHandle, useRef} from "react";
+import {indentUnit} from "@codemirror/language";
 
 const languageExtensions = {
   JavaScript: javascript(),
@@ -78,7 +79,7 @@ const CodeEditor = forwardRef(({editable = true, curLanguage = 'JavaScript', cur
         searchKeymap: true,
         historyKeymap: true,
       }}
-      extensions={[languageExtension, disableAutocomplete, EditorView.lineWrapping]}
+      extensions={[languageExtension, disableAutocomplete, EditorView.lineWrapping, indentUnit.of("    ")]}
       theme={solarizedLight}
     />
   );

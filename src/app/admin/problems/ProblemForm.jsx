@@ -274,7 +274,7 @@ function LanguageItem({language, formattedLanguage, index}) {
 
   useEffect(() => {
     // 전체 initcode 배열에서 props.language와 일치하는 항목이 있는지 확인
-    const found = languages.find(lang => lang === language);
+    const found = languages?.find(lang => lang === language);
     if (found) {
       setToggleEnabled(true);
 
